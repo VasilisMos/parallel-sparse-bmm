@@ -13,32 +13,6 @@ void test_blocking_creation(int nb){
     cout << "---------------------------BLOCK CREATION - DONE-------------" << endl;
 }
 
-void profile_blocking_creation(){
-
-    int nb[11] = {1,2,5,10,20,25};
-    int n = 6;
-    csc *A = (csc*)parse_data(fname1, CSC); print_version(A,A,A);
-
-    struct timespec start,end;
-
-    for(int i=0;i<6;i++){
-        printf("iter %d/%d, nb = %d\n",i+1,n,nb[i]);
-        
-        start = tic();
-        csc ** A_bl = create_blocks(A,nb[i]);
-        end = toc(); cout << endl;
-
-        // time_elapsed(end, start);
-
-        for(int j=0;j<(nb[i]-1)*(nb[i]-1);j++){
-            destroyCsc(A_bl[i]);
-        }
-
-        free(A_bl);
-    }
-
-}
-
 void test_bmm_sparse_blocking(){
 
     struct timespec t1,t2;
@@ -57,12 +31,10 @@ void test_bmm_sparse_blocking(){
 }
 
 int main(int argc, char * argv[]){
-
-    test_bmm_sparse_blocking();
     
-    // test_bmm_sparse_fast();
+    test_bmm_sparse_fast();
+    test_bmm_sparse_blocking();
     // test_blocking_creation(BLOCKING_FACTOR);
-    // profile_blocking_creation();
 
     cout << "Main is exiting successfully" << endl;  return 0;
 }

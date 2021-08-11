@@ -49,13 +49,14 @@ inline void test_COO_CSR_conversions(char *fn1){
 }
 
 inline void test_bmm_sparse_fast(){
+    struct timespec t1,t2;
 
     csc *A = (csc*)parse_data(fname1, CSC);
     csc *B = (csc*)parse_data(fname2, CSC);
     csc *C = initCsc(A->rowS,B->colS, 2*(A->nnz + B->nnz));
     
     print_version(A,B,C);
-    tic(); bmm(A,B,C); toc(); std::cout << std::endl;
+    t1 = tic(); bmm(A,B,C); t2 = toc(); time_elapsed(t2,t1); std::cout << std::endl;
 
     write_mtx_csc(C, fname3);
     destroyCsc(A); destroyCsc(B); destroyCsc(C);
