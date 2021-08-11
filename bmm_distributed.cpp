@@ -35,6 +35,8 @@ void run_bmm_master(int total_procs){
     Bbl_total = create_blocks(B, total_procs); // Matrix B cut in blocks
     t1 = TOC 
     cout << "Block Creation:"; time_elapsed(t1,t0);
+
+
     Cbl_total = (csc **)malloc(total_procs * total_procs * sizeof(csc *));
     for (int s = 0; s < total_procs; s++)   temps[s] = initCsc(Abl_total[0]->rowS, Bbl_total[s]->colS, 3 * (Abl_total[s]->nnz + Bbl_total[s]->nnz)); 
 
@@ -101,7 +103,6 @@ void run_bmm_slave(int proc_num, int total_procs){
 
     for (int s = 0; s < total_procs; s++)   temps[s] = initCsc(Abl[s]->rowS, Bbl[s]->colS, 3 * (Abl[s]->nnz + Bbl[s]->nnz)); 
 
-    // Cbl[proc_num] = block_bmm_unoptimized(Abl, Bbl, total_procs, MASTER);
     Cbl[proc_num] = block_bmm(Abl, Bbl, temps, total_procs, MASTER);
     MPI_Barrier(MPI_COMM_WORLD);
 
@@ -151,7 +152,3 @@ void ring(csc **Abl, csc**Bbl,csc **Cbl,csc **temps, int proc_num,int total_proc
 }
 
 // End of File
-
-
-
-

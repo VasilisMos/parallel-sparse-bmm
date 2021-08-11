@@ -56,9 +56,9 @@ def test_mpi_performance(filename):
         iterator = iterator + 1
     
     fig = plt.figure(figsize = (10, 5))
-    plt.bar(proc_names, mean_times, color ='blue',
+    plt.bar(proc_names, mean_times/mean_times[0], color ='blue',
         width = 0.4)
     plt.xlabel("Number of MPI Processes")
-    plt.ylabel("Time(Seconds)")
+    plt.ylabel("Relative Execution Time (Baseline procs=2)")
     plt.title("Scaling with respect to number of MPI Processes")
     plt.show()

@@ -3,7 +3,7 @@
 %  with '*' describing Boolean Matrix Multiplication operation
 %  Each matrix is stored in '../datasets' directory in the corresponding file
 
-function generateDatasets(n=12e4)
+function generateDatasets(n=2.4e5)
 %n = 1e4;
 d = 2;
 A = sprand( n, n, d/n) > 0;

@@ -2,10 +2,11 @@
 
 This project implements a parallelization of Boolean Matrix Multiplication **A*B=C** in `C++`, where **A,B,C** are Sparse Matrices in CSC (*Compressed sparse column*) format. The parallelization is achieved with in two stages. The first, second,
 
-Software prerequisites for this Project:
+Software prerequisites to run this Project:
 
-1. `MATLAB` (also works on `Octave` - Needs further testing)
+1. `Octave` (also works with `MATLAB`)
 2. `g++` compiler
+3. `Python3`
 
 ## How Computation is done
 
@@ -13,9 +14,13 @@ TODO.
 
 ## Generate Matrices A,B,C
 
-To generate Sparse Matrices **A,B,C**, simply open a `MATLAB` command prompt and move to the ./matlab directory of this Project and type:
+To generate Sparse Matrices **A,B,C**, simply open a `MATLAB\Octave` command prompt and move to the ./matlab directory of this Project and type:
 
     >> generate_datasets;
+
+Alternatively, if `Octave` is installed, simply execute from project directory:
+
+    $make data
 
 You can change the dimensions and the sparsity level  of produced matrices at the top of file ./matlab/generateDatasets.m.
 
@@ -32,7 +37,11 @@ Clean project executables, results with:
 Similarly, on a linux terminal (again on the project main folder) run (for testing and purge, respectively):
 
     make test
-    make test_distributed
+    make test_omp  
+    make test_omp NUM_THREADS=x #to specify number x of spawned threads
+    make test_distributed  
+    make test_distributed MPI_PROCS=x #to specify proccess number equal to x
+
     make clean
 
 ## Perfomance - Speedup
@@ -63,4 +72,6 @@ Similarly, on `Octave`, move to project directory and execute on command line:
 
 [1] MATLAB ".mtx" files I/O: <https://math.nist.gov/MatrixMarket/mmio/matlab/mmiomatlab.html>
 
-[2]
+[2] Louridas - Four Russians Algorithm https://louridas.github.io/rwa/assignments/four-russians/
+
+[3] PetterS - SuiteSparse Matrix Package https://github.com/PetterS/SuiteSparse
