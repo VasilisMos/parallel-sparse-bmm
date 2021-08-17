@@ -33,7 +33,7 @@ test: data sequential
 test_distributed: data distributed
 		clear && mpirun -np $(MPI_PROCS) ./distributed.out && rm ./distributed.out
 test_multithreaded: data multithreaded
-		clear && ./multithreaded.out && rm ./multithreaded.out
+		clear && ./multithreaded.out ${THREAD_NUM} && rm ./multithreaded.out
 fast_test: sequential
 		./seq.out && rm ./seq.out
 
@@ -51,7 +51,7 @@ sequential:
 distributed:
 		$(MPICC) $(OPTIMIZATION) $(HEADERS) $(SPARSE_HEADERS) ./headers/my_mpi_comms.cpp -o distributed.out distributed.cpp bmm_distributed.cpp bmm_blocking.cpp $(FLAGS)
 multithreaded:
-		$(CC) $(OPTIMIZATION) $(HEADERS) $(SPARSE_HEADERS) -o multithreaded.out omp.cpp bmm_blocking.cpp -fopenmp $(FLAGS)
+		$(CC) $(OPTIMIZATION) $(HEADERS) $(SPARSE_HEADERS) -o multithreaded.out omp.cpp bmm_blocking.cpp bmm_multithread.cpp -fopenmp $(FLAGS)
 
 
 # ----- Measure Performance

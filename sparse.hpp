@@ -77,5 +77,7 @@ inline void csc_info(csc *A){
     printf("CSC Matrix dim = (%d,%d), nnz = %d\n",A->rowS, A->colS, A->nnz);
 }
 
+inline int nnz(csc* A) { return A->nnz; }
+
 
 #endif

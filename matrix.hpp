@@ -17,7 +17,7 @@
 
 using namespace std;
 
-void bmm_wrapper(char *f1, char *f2,char *fout);
+void bmm_wrapper(void (*bmm_implementation)(csc*, csc*, csc*), char *f1, char *f2, char *fout );
 
 void bmm(csr *A,csc *B,csr *C);
 void bmm(csc *A, csc*B, csc *C);

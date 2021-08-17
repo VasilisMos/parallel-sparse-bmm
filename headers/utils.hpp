@@ -7,6 +7,7 @@
 
 #define SEQUENTIAL 1
 #define DISTRIBUTED 2
+#define MULTITHREADED 3
 
 template <typename T>
 inline void printV(T *vec, int n){

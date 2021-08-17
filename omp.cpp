@@ -1,10 +1,12 @@
 #include "./headers/testing.hpp"
+#include "bmm_multithread.hpp"
 #include "./headers/parameters.hpp"
 #include <string.h>
 #include <omp.h>
 
 #define TIC tic();
 #define TOC toc();
+#define GET_INPUT (argc==1 ? 4 : atoi(argv[1]))
 
 void bmm_omp(csc *A, csc *B, csc *C){
     int Bncol = A->colS, Anrow = A->rowS;
@@ -64,16 +66,10 @@ void bmm_omp(csc *A, csc *B, csc *C){
     free(Flag);
 }
 
-int main(){
-    csc *A = (csc*)parse_data(fname1, CSC);
-    csc *B = (csc*)parse_data(fname2, CSC);
-    csc *C = initCsc(A->rowS,B->colS, 2*(A->nnz + B->nnz));
-    print_version(A,B,C);
-    
-    tic();
-    bmm_omp(A,B,C);
-    toc();
+int main(int argc, char *argv[]){
+    // run_bmm_multithread(GET_INPUT);
 
-    write_mtx_csc(C, fname3);
-    destroyCsc(A); destroyCsc(B); destroyCsc(C);
+    bmm_wrapper(bmm_omp, fname1, fname2, fname3);
+
+    printf("Main is exiting successfully\n");
 }
