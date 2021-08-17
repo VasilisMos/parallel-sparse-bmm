@@ -10,7 +10,7 @@
 
 #define PRINT_2 0
 
-void bmm_blocking(csc *A, csc *B, csc *C, int PRINT){
+void bmm_blocking(csc *A, csc *B, csc *C){
 
     /* Blocking Variables */
     int nb = BLOCKING_FACTOR; //Blocking Factor
@@ -34,24 +34,17 @@ void bmm_blocking(csc *A, csc *B, csc *C, int PRINT){
 
         for (int p = 0; p < nb; p++)      // Being at C(p,q) = 0;
         {
-            // printf("(%d,%d)\n",p,q);
             for (int s = 0; s < nb; s++) // C(p,q) = A(p,:)*B(:,q)
             {
-                // printf("(%d,%d) dim(A)=(%d,%d), dim(B)=(%d,%d)\n",p,q,Aps->rowS,Aps->colS,Bsq->rowS,Bsq->colS);
-
-                // printf("Mallocing for nnz = %d\n",(A->nnz + B->nnz)/nb/nb*2);
                 temps[s] = initCsc(b,b, (A->nnz + B->nnz)/nb/nb*2);
                 bmm(Aps, Bsq, temps[s]);
-                // printCsc(temps[s]);
 
             }
             merge_blocks(Cpq,temps,nb);
-            // printCsc(Cpq);
         }
     }
 
     unify_blocks(C, Cbl, nb);
-    // printCsc(C);
 }
 
 void merge_blocks(csc *dest, csc **temps, int nb){

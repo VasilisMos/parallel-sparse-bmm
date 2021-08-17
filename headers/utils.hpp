@@ -39,6 +39,8 @@ inline void write_times(int N,struct timespec t1, struct timespec t2, int TYPE, 
     strcpy(type,"Sequential");
   if(TYPE == DISTRIBUTED)
     strcpy(type,"Distributed");
+  if(TYPE == MULTITHREADED)
+    strcpy(type,"Multithreaded");
 
   long seconds = t2.tv_sec - t1.tv_sec;
   long nanoseconds = t2.tv_nsec - t1.tv_nsec;

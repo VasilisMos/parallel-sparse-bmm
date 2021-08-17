@@ -158,16 +158,19 @@ int sparse_and(int *A, int *B, int n1, int n2){
     return 0;
 }
 
-void bmm_wrapper(void (*bmm_implementation)(csc*, csc*, csc*), char *f1, char *f2, char *fout ){
+void bmm_wrapper(void (*bmm_implementation)(csc*, csc*, csc*), char *f1, char *f2, char *fout, int TYPE, int procs ){
     csc *A = (csc*)parse_data(f1, CSC);
     csc *B = (csc*)parse_data(f2, CSC);
-    csc *C = initCsc(A->rowS,B->colS, 2*(A->nnz + B->nnz));
+    csc *C = initCsc(A->rowS,B->colS, 3*(A->nnz + B->nnz));
     print_version(A,B,C);
 
-    tic();
-    bmm_implementation(A,B,C);
-    toc();
+    struct timespec t1,t2;
 
+    t1 = tic();
+    bmm_implementation(A,B,C);
+    t2 = toc(); time_elapsed(t2,t1);
+
+    write_times(A->rowS, t1,t2,TYPE, procs);
     write_mtx_csc(C, fout);
     destroyCsc(A); destroyCsc(B); destroyCsc(C);
 }

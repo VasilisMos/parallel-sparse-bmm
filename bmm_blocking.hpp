@@ -4,7 +4,7 @@
 #include "matrix.hpp"
 #include "./headers/parameters.hpp"
 
-void bmm_blocking(csc *A, csc *B, csc *C,int PRINT=0);
+void bmm_blocking(csc *A, csc *B, csc *C);
 csc ** create_blocks(csc *A,int nb);
 void merge_blocks(csc *dest, csc **temps, int nb);
 csc *unify_blocks(csc *C,csc **Cbl, int nb);
