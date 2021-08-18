@@ -27,11 +27,11 @@ void run_bmm_multithread(int total_procs){
     Abl_total = create_blocks(A, total_procs); // Matrix A cut in blocks
     Bbl_total = create_blocks(B, total_procs); // Matrix B cut in blocks
     t1 = TOC 
-    cout << "Block Creation:"; time_elapsed(t1,t0);
 
     C = bmm_multithreads(Abl_total, Bbl_total, total_procs);
 
     finishing = TOC 
+    cout << "Block Creation:"; time_elapsed(t1,t0);
     cout << "Total time: "; time_elapsed(finishing, initiation);
 
     //Finalize
@@ -51,6 +51,10 @@ csc *bmm_multithreads(csc **Abl_total, csc **Bbl_total, int total_procs){
     csc **Cbl_total = (csc**)malloc( total_procs * total_procs * sizeof(csc*) );
     omp_set_num_threads(total_procs);
 
+    struct timespec t1,t2;
+
+    t1 = tic();
+
 #pragma omp parallel shared(Abl_total, Bbl_total,Cbl_total) num_threads(total_procs)
 {
     int proc_num = omp_get_thread_num();
@@ -69,8 +73,10 @@ csc *bmm_multithreads(csc **Abl_total, csc **Bbl_total, int total_procs){
             Abl[j] = Abl_total[ i * total_procs + j];
 
         Cbl_total[ i * total_procs + proc_num ] = block_bmm(Abl, Bbl, temps, total_procs, proc_num);
-    }
+    }    
 }   
+    t2 = toc();
+    time_elapsed(t2,t1);
 
     unify_blocks(C, Cbl_total, total_procs);
 

@@ -3,7 +3,7 @@
 
 #define TEST
 // #define SMALL
-#define BLOCKING_FACTOR 8
+#define BLOCKING_FACTOR 4
 
 #ifdef SMALL
 #define fname1 "./datasets/small/small.mtx"
