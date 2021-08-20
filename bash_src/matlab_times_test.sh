@@ -11,16 +11,13 @@ cd ../matlab
 
 #### RUN MATLAB JOB ####
 echo "Starting Matlab"
-matlab -nodisplay << EOF &> ../logs/matlab.out
+matlab -nodisplay << EOF &> matlab.out
 
 disp("Sanity Check");
 a = 15;
 disp(a)
 
-n = (1:4) * 1.2e4;
+timing_performance;
 
-for i=1:size(n)
-    generateDatasets(1.2e4);
-end
 exit
 EOF

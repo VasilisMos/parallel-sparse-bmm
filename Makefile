@@ -16,6 +16,7 @@ all: sequential distributed multithreaded
 
 # ----- Matlab/Octave I/O
 data:
+		bash ./bash_src/set_parameters.sh $(N)
 		date "+%H:%M:%S   %d/%m/%y" > ./logs/generate_data.txt
 		echo "----Generating Data----" >> ./logs/generate_data.txt
 		cd ./matlab && octave generateDatasets.m >> ../logs/generate_data.txt
