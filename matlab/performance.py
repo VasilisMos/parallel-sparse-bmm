@@ -21,20 +21,23 @@ def get_version_times(filename, version):
 
 
 def plot_execution_times(dimensions, matlab, seq, distributed, omp, hybrid):
-    plt.plot(dimensions, seq, 'ro-', dimensions, distributed, 'g^-', dimensions, matlab,'bs-', dimensions, omp, 'ys-', dimensions, hybrid, 'gs-')
-    plt.ylabel('Time (Seconds)')
-    plt.xlabel('Dim number (N)')
-    plt.title('Performance of Boolean Matrix Multiplication Versions')
-    plt.legend(['MATLAB (Double-Precision Mat. Mult.)', 'Sequential BMM (C++)', 'Distributed (OpenMPI)', 'Multithreaded (OpenMP)', 'Hybrid(MPI+OMP)'])
-    plt.show()
+    if len(dimensions) == 1:
+        plt.bar(['Matlab', 'Sequential', 'Distributed','Multithreaded', 'Hybrid'], [matlab[0], seq[0], distributed[0], omp[0], hybrid[0]])
+        plt.ylabel('Time (in Seconds)')
+        plt.title('Performance of Boolean Matrix Multiplication Versions')
+        plt.show()
+        
+    else:
+        plt.plot(dimensions, seq, 'ro-', dimensions, distributed, 'g^-', dimensions, matlab,'bs-', dimensions, omp, 'ys-', dimensions, hybrid, 'gs-')
+        plt.ylabel('Time (Seconds)')
+        plt.xlabel('Dim number (N)')
+        plt.title('Performance of Boolean Matrix Multiplication Versions')
+        plt.legend(['MATLAB (Double-Precision Mat. Mult.)', 'Sequential BMM (C++)', 'Distributed (OpenMPI)', 'Multithreaded (OpenMP)', 'Hybrid(MPI+OMP)'])
+        plt.show()
 
 
-def test_exec_times(df_dist):
+def test_exec_times(matlab, seq, df_dist, omp, hybrid):
     dims = df_dist['dim']
-
-    seq = df_dist / 2
-    matlab = df_dist / 3
-    omp = df_dist / 4
     hybrid = df_dist / 5
 
     plot_execution_times(dims, matlab=matlab.loc[:, 'time'], seq=seq.loc[:, 'time'], distributed=df_dist.loc[:, 'time'], omp=omp.loc[:, 'time'], hybrid=hybrid.loc[:, 'time'])

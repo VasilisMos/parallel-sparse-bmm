@@ -1,7 +1,7 @@
 #ifndef TEST_HPP
 #define TEST_HPP
 
-#include "../matrix.hpp"
+#include "../sparse/matrix.hpp"
 #include "my_time.hpp"
 #include "parameters.hpp"
 

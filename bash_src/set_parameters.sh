@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DEFAULT_N=5e5
+DEFAULT_N=1e6
 
 set_params () {
     rm ./matlab/generateDatasets.m

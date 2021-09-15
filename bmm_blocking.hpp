@@ -1,7 +1,7 @@
 #ifndef BMM_BLOCKING_HPP
 #define BMM_BLOCKING_HPP
 
-#include "matrix.hpp"
+#include "./sparse/matrix.hpp"
 #include "./headers/parameters.hpp"
 
 void bmm_blocking(csc *A, csc *B, csc *C);

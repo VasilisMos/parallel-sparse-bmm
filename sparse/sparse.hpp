@@ -1,7 +1,7 @@
 #ifndef SPARSE_HPP
 #define SPARSE_HPP
 
-#include "./headers/mmio.h"
+#include "../headers/mmio.h"
 #include <stdlib.h>
 
 #define COO 0

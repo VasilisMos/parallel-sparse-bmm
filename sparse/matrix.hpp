@@ -8,9 +8,9 @@
 #include <typeinfo>
 #include "sparse.hpp"
 
-#include "headers/sorting.hpp"
-#include "headers/utils.hpp"
-#include "headers/my_time.hpp"
+#include "../headers/sorting.hpp"
+#include "../headers/utils.hpp"
+#include "../headers/my_time.hpp"
 
 #define max(x,y) ( ((x)>(y)) ? (x) : (y) )
 #define min(x,y) ( ((x)<(y)) ? (x) : (y) )

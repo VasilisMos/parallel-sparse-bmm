@@ -9,7 +9,7 @@ OPTIMIZATION=-O3
 FLAGS=-w
 DEBUG=-g
 HEADERS=headers/mmio.c headers/my_time.cpp headers/file_io.c
-SPARSE_HEADERS=sparse.cpp matrix.cpp
+SPARSE_HEADERS=./sparse/sparse.cpp ./sparse/matrix.cpp
 
 all: sequential distributed multithreaded
 
@@ -43,6 +43,9 @@ fast_test_distributed: distributed
 
 ultra_fast_test_distributed: 
 		mpirun -np $(MPI_PROCS) ./distributed.out
+
+ultra_fast_test_multithreaded: 
+		./multithreaded.out ${THREAD_NUM}
 
 
 # ----- Build Project

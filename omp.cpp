@@ -56,7 +56,7 @@ int main(int argc, char *argv[]){
 
     total_procs = GET_INPUT;
 
-    bmm_wrapper(bmm_blocking, fname1, fname2, fname3, SEQUENTIAL, 1);
+    // bmm_wrapper(bmm_blocking, fname1, fname2, fname3, SEQUENTIAL, 1);
     run_bmm_multithread(total_procs);
     // bmm_wrapper(bmm_blocking_mult, fname1, fname2, fname3, MULTITHREADED, total_procs);
 
