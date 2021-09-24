@@ -6,8 +6,8 @@
 *
 */
 
-#ifndef MM_IO_H
-#define MM_IO_H
+#ifndef MM_IO_HPP
+#define MM_IO_HPP
 
 #include <cstdio>
 

@@ -254,8 +254,10 @@ coo *readCoo(char filename[]){
     coo *ret = (coo*)malloc(sizeof(coo));
 
 
-    if ((f = fopen(filename, "r")) == NULL)
-            exit(1);
+    if ((f = fopen(filename, "r")) == NULL) {
+        printf("File:%s could not be opened.. Exiting gracefully\n",filename);
+        exit(1);
+    }
 
     if (mm_read_banner(f, &matcode) != 0)
     {

@@ -164,8 +164,9 @@ csc *unify_blocks(csc *C, csc **Cbl, int nb){
                 int start = Cpq->col_ptr[j_loc];
                 int end = Cpq->col_ptr[j_loc+1];
 
-                for (int i = 0; i < end - start; i++)
+                for (int i = 0; i < end - start; i++){
                     C->row[count++] = Cpq->row[start + i] + b*p;
+                }
             }
             C->col_ptr[j+1] = count;
         }

@@ -2,7 +2,7 @@
 #define UTILS_HPP
 
 #include <iostream>
-#include "file_io.h"
+#include "file_io.hpp"
 #include <string.h>
 
 #define SEQUENTIAL 1

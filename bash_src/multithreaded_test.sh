@@ -11,7 +11,7 @@ THREAD_NUM=8
 
 cd ..
 module purge
-module load gcc/9.2.0
+module load gcc/8.2.0
 module load octave
 
 dims=( 2 3 4 5 6 8 )

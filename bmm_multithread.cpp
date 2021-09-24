@@ -47,7 +47,8 @@ csc *bmm_multithreads(csc **Abl_total, csc **Bbl_total, int total_procs){
     int nb = total_procs;
     int n = nb* b;
 
-    csc *C = initCsc(n,n, 3 * nb * (nnz(Abl_total[0]) + nnz(Bbl_total[0]) ));
+//    printf("Doing malloc for C: (row,col,nnz)=(%d,%d,%d)\n",n,n,4 * nb * (nnz(Abl_total[0]) + nnz(Bbl_total[0]) ));
+    csc *C = initCsc(n,n, 5 * nb * (nnz(Abl_total[0]) + nnz(Bbl_total[0]) ));
     csc **Cbl_total = (csc**)malloc( total_procs * total_procs * sizeof(csc*) );
     omp_set_num_threads(total_procs);
 
@@ -74,11 +75,11 @@ csc *bmm_multithreads(csc **Abl_total, csc **Bbl_total, int total_procs){
 
         Cbl_total[ i * total_procs + proc_num ] = block_bmm(Abl, Bbl, temps, total_procs, proc_num);
     }    
-}   
+}
+    unify_blocks(C, Cbl_total, total_procs);
+
     t2 = toc();
     time_elapsed(t2,t1);
-
-    unify_blocks(C, Cbl_total, total_procs);
 
     return C;
 }

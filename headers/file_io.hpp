@@ -1,5 +1,5 @@
-#ifndef FILE_IO_H
-#define FILE_IO_H
+#ifndef FILE_IO_HPP
+#define FILE_IO_HPP
 
 #include <stdio.h>
 #include <stdlib.h>

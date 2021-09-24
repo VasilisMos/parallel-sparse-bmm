@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="Exercise-4"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/vasileios/Desktop/Exercise-4"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/vasileios/Desktop/Exercise-4"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/vasileios/Desktop/Exercise-4"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="multithreaded">
+				<Option output="/home/vasileios/Desktop/Exercise-4/multithreaded" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/vasileios/Desktop/Exercise-4"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 multithreaded"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="multithreaded/fast">
+				<Option output="/home/vasileios/Desktop/Exercise-4/multithreaded" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/vasileios/Desktop/Exercise-4"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 multithreaded/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="seq">
+				<Option output="/home/vasileios/Desktop/Exercise-4/seq" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/vasileios/Desktop/Exercise-4"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 seq"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="seq/fast">
+				<Option output="/home/vasileios/Desktop/Exercise-4/seq" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/vasileios/Desktop/Exercise-4"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 seq/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/vasileios/Desktop/Exercise-4/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/bmm_blocking.cpp">
+			<Option target="multithreaded"/>
+			<Option target="seq"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/bmm_blocking.hpp">
+			<Option target="multithreaded"/>
+			<Option target="seq"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/bmm_multithread.cpp">
+			<Option target="multithreaded"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/bmm_multithread.hpp">
+			<Option target="multithreaded"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/headers/file_io.cpp">
+			<Option target="multithreaded"/>
+			<Option target="seq"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/headers/file_io.hpp">
+			<Option target="multithreaded"/>
+			<Option target="seq"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/headers/mmio.cpp">
+			<Option target="multithreaded"/>
+			<Option target="seq"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/headers/mmio.hpp">
+			<Option target="multithreaded"/>
+			<Option target="seq"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/headers/my_time.cpp">
+			<Option target="multithreaded"/>
+			<Option target="seq"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/headers/my_time.hpp">
+			<Option target="multithreaded"/>
+			<Option target="seq"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/omp.cpp">
+			<Option target="multithreaded"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/sequential1.cpp">
+			<Option target="seq"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/sparse/matrix.cpp">
+			<Option target="multithreaded"/>
+			<Option target="seq"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/sparse/matrix.hpp">
+			<Option target="multithreaded"/>
+			<Option target="seq"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/sparse/sparse.cpp">
+			<Option target="multithreaded"/>
+			<Option target="seq"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/sparse/sparse.hpp">
+			<Option target="multithreaded"/>
+			<Option target="seq"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

@@ -6,11 +6,11 @@
 
 OUTPUT=./logs/console_output.txt
 num_iters=4
-dec_exponent=$((10 ** 4))
+dec_exponent=$((10 ** 5))
 
 cd ..
 module purge
-module load gcc/7.3.0
+module load gcc/8.2.0
 module load octave
 
 dims=( 2 3 4 5 6 8 )
