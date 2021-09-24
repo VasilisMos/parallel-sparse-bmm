@@ -10,4 +10,6 @@ matlab/octave-workspace
 cmake_install.cmake
 CMakeCache.txt
 CMakeFiles
+/Testing
+Exercise-4.cbp
 .idea

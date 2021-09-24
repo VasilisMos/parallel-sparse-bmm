@@ -21,8 +21,9 @@ To generate Sparse Matrices **A,B,C**, simply open a `MATLAB\Octave` command pro
 Alternatively, if `Octave` is installed, simply execute from project directory:
 
     $make data
+    $make data N=5e6
 
-You can change the dimensions and the sparsity level  of produced matrices at the top of file ./matlab/generateDatasets.m.
+You can also change the dimensions and the sparsity level  of produced matrices at the top of file ./matlab/generateDatasets.m.
 
 ## Execute Boolean Matrix Multiplication
 
@@ -55,6 +56,8 @@ Here boolean matrix multiplication execution times are presented for each versio
 | OpenMP (8 cores) |   |  |  |
 | MPI (8 nodes) |  |  |  |
 | MPI (8 nodes) + OpenMP (4 cores) per node |  |  |  |
+
+![Matlab Double-Precision Sparse matmult Performance](results/bmm_times_MATLAB_local.png)
 
 ## Results Validation
 

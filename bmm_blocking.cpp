@@ -130,9 +130,10 @@ csc ** create_blocks(csc *A,int nb){
         }
     }
 
-    for (int p = 0; p < nb; p++)
-        for (int q = 0; q < nb; q++)
-            n < 10 && (PRINT_2) ? print_block(A(p, q), p, q) : (void)0;
+    // Debug Printfs
+//    for (int p = 0; p < nb; p++)
+//        for (int q = 0; q < nb; q++)
+//            n < 10 && (PRINT_2) ? print_block(A(p, q), p, q) : (void)0;
 
     return Abl;
 }
