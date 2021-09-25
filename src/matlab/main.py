@@ -1,8 +1,7 @@
-from numpy.lib.function_base import diff
 import performance
 
 # filename = './times.csv'
-filename = '../logs/times.csv'
+filename = '../../logs/times.csv'
 df_dist = performance.get_version_times(filename, 'Distributed')
 # df_seq = performance.get_version_times(filename, 'Sequential').loc[:, 'time']
 # df_matlab = performance.get_version_times(filename, 'MATLAB').loc[:, 'time']

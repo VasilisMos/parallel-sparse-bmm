@@ -33,7 +33,7 @@ inline void println_tuple(int a, int b) { printf("(%d,%d)\n",a,b); }
 inline void write_times(int N,struct timespec t1, struct timespec t2, int TYPE, int proc_num){
   char type[20];
   char msg[70];
-  char fname[] = "./logs/times.csv";
+  char fname[] = "../logs/times.csv";
 
   if(TYPE == SEQUENTIAL)
     strcpy(type,"Sequential");
@@ -59,7 +59,7 @@ inline void write_times(int N,struct timespec t1, struct timespec t2, int TYPE, 
   file_writer(fname, msg, APPEND);
 }
 inline void clear_times(){
-  char fname[] = "./logs/times.csv";
+  char fname[] = "../logs/times.csv";
   file_writer(fname, "N,time_sec,type, procs", OVERWRITE);
 }
 

@@ -1,6 +1,6 @@
-#include "./headers/testing.hpp"
+#include "../headers/testing.hpp"
 #include "bmm_multithread.hpp"
-#include "./headers/parameters.hpp"
+#include "../headers/parameters.hpp"
 #include <string.h>
 #include <omp.h>
 

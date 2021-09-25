@@ -17,7 +17,7 @@ A = sprand( n, n, d/n) > 0;
 B = sprand( n, n, d/n) > 0;
 tic; C = (A*B) > 0; t = toc
 
-fileID = fopen("\""../logs/times.csv"\"",'a');
+fileID = fopen("\""../../logs/times.csv"\"",'a');
 fprintf(fileID,"\""%d,%f,MATLAB,1\n"\"",n,t);
 fclose(fileID);
 
@@ -26,15 +26,15 @@ fprintf('nnz(C)=%d\n',nnz(C));
 tag = 'test';
 
 fprintf('Storing matrix A.. ');
-tic; store_sparse_matrix(strcat('../datasets/',tag,'/A_', tag,'.mtx'),A); toc;
+tic; store_sparse_matrix(strcat('../../datasets/',tag,'/A_', tag,'.mtx'),A); toc;
 clear A;
 
 fprintf('Storing matrix B.. ');
-tic; store_sparse_matrix(strcat('../datasets/',tag,'/B_', tag, '.mtx'),B); toc;
+tic; store_sparse_matrix(strcat('../../datasets/',tag,'/B_', tag, '.mtx'),B); toc;
 clear B;
 
 fprintf('Storing matrix C.. ');
-tic; store_sparse_matrix(strcat('../datasets/',tag,'/C_', tag, '.mtx'),C); toc;
+tic; store_sparse_matrix(strcat('../../datasets/',tag,'/C_', tag, '.mtx'),C); toc;
 clear C;
 end
 " >> ./matlab/generateDatasets.m

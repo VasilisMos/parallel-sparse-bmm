@@ -1,7 +1,7 @@
 #ifndef BMM_MULTITHREADED_HPP
 #define BMM_MULTITHREADED_HPP
 
-#include "bmm_blocking.hpp"
+#include "../sparse/bmm_blocking.hpp"
 #include <omp.h>
 
 #define TIC tic();

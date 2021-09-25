@@ -2,7 +2,7 @@
 #define MY_MPI_COMMS_HPP
 
 #include <mpi.h>
-#include "../bmm_blocking.hpp"
+#include "../sparse/bmm_blocking.hpp"
 
 void send_block(csc* block,int nb, int receiver);
 void isend_block(csc* block, int nb, int receiver, MPI_Request *reqs);

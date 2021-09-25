@@ -1,5 +1,5 @@
-#include "./headers/testing.hpp"
-#include "bmm_blocking.hpp"
+#include "../headers/testing.hpp"
+#include "../sparse/bmm_blocking.hpp"
 #include <string.h>
 
 /* Breaks the original A sparse matrix in square submatrices 
@@ -11,6 +11,7 @@ void test_blocking_creation(int nb){
     csc *A = (csc*)parse_data(fname1, CSC); print_version(A,A,A);
     tic(); csc ** A_bl = create_blocks(A,nb);  toc();
     cout << "---------------------------BLOCK CREATION - DONE-------------" << endl;
+
 }
 
 void test_bmm_sparse_blocking(){

@@ -1,8 +1,8 @@
 #ifndef BMM_DISTRIBUTED_HPP
 #define BMM_DISTRIBUTED_HPP
 
-#include "bmm_blocking.hpp"
-#include "./headers/my_mpi_comms.hpp"
+#include "../sparse/bmm_blocking.hpp"
+#include "../headers/my_mpi_comms.hpp"
 #include <mpi.h>
 
 #define MASTER 0

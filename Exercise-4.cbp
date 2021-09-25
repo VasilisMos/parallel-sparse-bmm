@@ -130,20 +130,6 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/vasileios/Desktop/Exercise-4/bmm_blocking.cpp">
-			<Option target="multithreaded"/>
-			<Option target="seq"/>
-		</Unit>
-		<Unit filename="/home/vasileios/Desktop/Exercise-4/bmm_blocking.hpp">
-			<Option target="multithreaded"/>
-			<Option target="seq"/>
-		</Unit>
-		<Unit filename="/home/vasileios/Desktop/Exercise-4/bmm_multithread.cpp">
-			<Option target="multithreaded"/>
-		</Unit>
-		<Unit filename="/home/vasileios/Desktop/Exercise-4/bmm_multithread.hpp">
-			<Option target="multithreaded"/>
-		</Unit>
 		<Unit filename="/home/vasileios/Desktop/Exercise-4/headers/file_io.cpp">
 			<Option target="multithreaded"/>
 			<Option target="seq"/>
@@ -168,10 +154,24 @@
 			<Option target="multithreaded"/>
 			<Option target="seq"/>
 		</Unit>
-		<Unit filename="/home/vasileios/Desktop/Exercise-4/omp.cpp">
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/multithreaded/bmm_multithread.cpp">
 			<Option target="multithreaded"/>
 		</Unit>
-		<Unit filename="/home/vasileios/Desktop/Exercise-4/sequential1.cpp">
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/multithreaded/bmm_multithread.hpp">
+			<Option target="multithreaded"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/multithreaded/omp.cpp">
+			<Option target="multithreaded"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/sequential/sequential1.cpp">
+			<Option target="seq"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/sparse/bmm_blocking.cpp">
+			<Option target="multithreaded"/>
+			<Option target="seq"/>
+		</Unit>
+		<Unit filename="/home/vasileios/Desktop/Exercise-4/sparse/bmm_blocking.hpp">
+			<Option target="multithreaded"/>
 			<Option target="seq"/>
 		</Unit>
 		<Unit filename="/home/vasileios/Desktop/Exercise-4/sparse/matrix.cpp">
