@@ -3,13 +3,16 @@
 /logs
 /.vscode
 /*.out
+/src/*.out
 /test.txt
 src/matlab/__pycache__
 src/matlab/octave-workspace
+results/*txt
 
 cmake_install.cmake
 CMakeCache.txt
 CMakeFiles
+Testing
 /Testing/Temporary/LastTest.log
 /Exercise-4.cbp
 .idea
