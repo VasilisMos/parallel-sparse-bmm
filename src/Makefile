@@ -17,7 +17,7 @@ DISTRIBUTED_FILES=./distributed/distributed.cpp ./distributed/bmm_distributed.cp
 
 all: sequential distributed multithreaded
 
-.PHONY: sequential distributed multithreaded
+.PHONY: sequential distributed multithreaded four_russians
 
 # ----- Matlab/Octave I/O
 data:
@@ -46,6 +46,12 @@ fast_test: sequential
 fast_test_distributed: distributed
 		mpirun -np $(MPI_PROCS) ./distributed.out &&	rm ./distributed.out
 
+fast_test_four_russians: four_russians
+		./four_russ.out && rm ./four_russ.out
+
+ultra_fast_test_sequential:
+		./seq.out 
+
 ultra_fast_test_distributed:
 		mpirun -np $(MPI_PROCS) ./distributed.out
 
@@ -63,6 +69,8 @@ multithreaded:
 distributed:
 		$(MPICC) $(OPTIMIZATION) $(HEADERS) $(SPARSE_HEADERS) -o distributed.out $(DISTRIBUTED_FILES) $(FLAGS)
 
+four_russians:
+		$(CC) $(OPTIMIZATION) $(HEADERS) $(SPARSE_HEADERS) -o four_russ.out ./four_russians/bmm_four_russians.cpp ./four_russians/main.cpp $(FLAGS)
 
 # ----- Measure Performance
 performance:
@@ -73,12 +81,12 @@ performance:
 
 # ----- Clean/Purge
 clear_times:
-		rm ./logs/times.csv && echo "dim,time,type,procs" >> "./logs/times.csv"
+		rm ../logs/times.csv && echo "dim,time,type,procs" >> "../logs/times.csv"
 clean:
 		echo "Removing executable.."
-		rm ./*.out ./seq
+		rm ./*.out
 		echo "Done Successfully"
 		echo "Removing Datasets.."
-		rm ./datasets/test/*_test.mtx ./datasets/test/*result.mtx
+		rm ../datasets/test/*_test.mtx ../datasets/test/*result.mtx
 		echo "Done Successfully"
 		

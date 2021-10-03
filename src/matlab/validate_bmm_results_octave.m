@@ -4,8 +4,8 @@
 % If at least one mismatch found, prints some error info and the location
 % of the mismatch using spy plot
 
-filename_gold = "../datasets/test/C_test.mtx";
-filenameC = "../datasets/test/C_result.mtx" ;
+filename_gold = "../../datasets/test/C_test.mtx";
+filenameC = "../../datasets/test/C_result.mtx" ;
 
 % Read Result and ground truth
 C = mmread(filenameC);

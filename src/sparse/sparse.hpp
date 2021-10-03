@@ -78,6 +78,6 @@ inline void csc_info(csc *A){
 }
 
 inline int nnz(csc* A) { return A->nnz; }
-
+inline int nnz(csr* A) { return A->nnz; }
 
 #endif

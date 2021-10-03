@@ -3,7 +3,7 @@
 num_iters=4
 num_procs=( 2 3 4 5 6 8 )
 iters=( $(seq 1 ${num_iters} ) )
-OUTPUT=./logs/console_output.txt
+OUTPUT=../logs/console_output.txt
 
 rm $OUTPUT
 

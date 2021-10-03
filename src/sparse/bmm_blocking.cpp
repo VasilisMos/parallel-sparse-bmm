@@ -36,7 +36,7 @@ void bmm_blocking(csc *A, csc *B, csc *C){
         {
             for (int s = 0; s < nb; s++) // C(p,q) = A(p,:)*B(:,q)
             {
-                temps[s] = initCsc(b,b, (A->nnz + B->nnz)/nb/nb*2);
+                temps[s] = initCsc(b,b, (A->nnz + B->nnz)/nb/nb*3);
                 bmm(Aps, Bsq, temps[s]);
 
             }
@@ -50,7 +50,7 @@ void bmm_blocking(csc *A, csc *B, csc *C){
 void merge_blocks(csc *dest, csc **temps, int nb){
 
     csc *Cb = dest;  Cb->nnz = 0; Cb->col_ptr[0] = 0;
-    int v[nb * temps[0]->nnz], colSize = dest->colS;
+    int v[nb * temps[0]->nnz + 2], colSize = dest->colS;
 
     // printf("Colsize = (%d,%d)\n",dest->rowS,dest->colS);
 

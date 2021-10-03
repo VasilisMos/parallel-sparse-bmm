@@ -4,7 +4,7 @@
 #SBATCH --partition=batch
 #SBATCH --time=00:02:00
 
-OUTPUT=./logs/console_output.txt
+OUTPUT=../logs/console_output.txt
 num_iters=4
 dec_exponent=$((10 ** 5))
 

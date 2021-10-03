@@ -43,19 +43,14 @@ void run_bmm_multithread(int total_procs){
 
 csc *bmm_multithreads(csc **Abl_total, csc **Bbl_total, int total_procs){
 
-    int b = Abl_total[0]->rowS;
-    int nb = total_procs;
-    int n = nb* b;
-    int C_nnz = 5 * nb * (nnz(Abl_total[0]) + nnz(Bbl_total[0]));
+    int b = Abl_total[0]->rowS, nb = total_procs, n = nb* b;
+    int C_nnz = 10 * nb * (nnz(Abl_total[0]) + nnz(Bbl_total[0]));
 
-//    printf("Doing malloc for C: (row,col,nnz)=(%d,%d,%d)\n",n,n,4 * nb * (nnz(Abl_total[0]) + nnz(Bbl_total[0]) ));
     csc *C = initCsc(n,n, C_nnz);
     csc **Cbl_total = (csc**)malloc( total_procs * total_procs * sizeof(csc*) );
     omp_set_num_threads(total_procs);
 
-    struct timespec t1,t2;
-
-    t1 = tic();
+    struct timespec t1 = tic();
 
 #pragma omp parallel shared(Abl_total, Bbl_total,Cbl_total) num_threads(total_procs)
 {
@@ -79,7 +74,7 @@ csc *bmm_multithreads(csc **Abl_total, csc **Bbl_total, int total_procs){
 }
     unify_blocks(C, Cbl_total, total_procs);
 
-    t2 = toc();
+    struct timespec t2 = toc();
     time_elapsed(t2,t1);
 
     return C;
