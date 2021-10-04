@@ -91,7 +91,7 @@ csr *coo2csr(coo *in){
     int nnz = in->nnz;
 
     csr *out = (csr*)malloc(sizeof(csr));
-    out->r_p = (int*)malloc( n * sizeof(int) );
+    out->r_p = (int*)malloc( (n+1) * sizeof(int) );
     out->col = (int*)malloc( nnz * sizeof(int) );
     out->nnz = nnz;
     out->rowS = n; out->colS = n;
@@ -146,7 +146,7 @@ csc *coo2csc(coo *in){
     int nnz = in->nnz;
 
     csc *out = (csc*)malloc(sizeof(csc));
-    out->col_ptr = (int*)malloc( n * sizeof(int) );
+    out->col_ptr = (int*)malloc( (n+1) * sizeof(int) );
     out->row = (int*)malloc( nnz * sizeof(int) );
     out->nnz = nnz;
     out->rowS = in->rowS; out->colS = in->colS;
@@ -376,21 +376,29 @@ csc *initCsc(int rowS,int colS, int nnz){
  * Working
  * */
 void printCsr(csr *a){
-  printf("col = ["); int i; int r_n = 1; int n=a->rowS;
-  for(i=0;i<a->nnz;i++){
-      if(i == a->r_p[r_n]){
-          printf(",  ");
-          r_n++;
-      }
-    printf("%d ",a->col[i]);
-  }
-  printf("]\n");
+    int i; int r_n = 1; int n=a->rowS;
 
-  printf("row = [");
-  for(i=0;i<n+1;i++){
-    printf("%d ",a->r_p[i]);
-  }
-  printf("]\n");
+    printf("Csr: dims=(%d,%d)",a->rowS,a->colS);
+    printf(", nnz=%d\n",a->nnz);
+    printf("col = [");
+    
+    for (i = 0; i < a->nnz; i++)
+    {
+        if (i == a->r_p[r_n])
+        {
+            printf(",  ");
+            r_n++;
+        }
+        printf("%d ", a->col[i]);
+    }
+    printf("]\n");
+
+    printf("row = [");
+    for (i = 0; i < n + 1; i++)
+    {
+        printf("%d ", a->r_p[i]);
+    }
+    printf("]\n");
 }
 
 /*
@@ -398,21 +406,25 @@ void printCsr(csr *a){
  * Working
  * */
 void printCsc(csc *a){
-  printf("row = ["); int i; int r_n = 1; int n=a->rowS;
+
+  int i; int r_n = 1; int n=a->colS;
+   
+  printf("Csc: dims=(%d,%d)",a->rowS,a->colS);
+  printf(", nnz=%d\n",a->nnz);
+  printf("row = [");
+
   for(i=0;i<a->nnz;i++){
       if(i == a->col_ptr[r_n]){
           printf(",  ");
           r_n++;
       }
     printf("%d ",a->row[i]);
-  }
-  printf("]\n");
+  } printf("]\n");
 
   printf("col = [");
   for(i=0;i<n+1;i++){
     printf("%d ",a->col_ptr[i]);
-  }
-  printf("]\n");
+  } printf("]\n");
 }
 
 /*

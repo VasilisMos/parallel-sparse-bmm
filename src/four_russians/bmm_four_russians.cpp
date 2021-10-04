@@ -89,27 +89,27 @@ csc *bmm_four_russians(csc *A, csc *B,csc *C){
     int i_max = (int)ceil(n/m);
 
     csr *B_csr = csc2csr(B);
-    csr *Ci = initCsr(A->rowS, B->colS, 3*(nnz(A) + nnz(B)));
     csr *Rs = initCsr((int)pow(2,m), n, 3*(nnz(A) + nnz(B)));
+
+    csr *Ci = initCsr(A->rowS, B->colS, 3*(nnz(A) + nnz(B)));
+    csr *C_csr = initCsr(A->rowS, B->colS, 3*(nnz(A) + nnz(B)));
+    C_csr->nnz=0; for(int i=0;i<C_csr->rowS+1;i++) C_csr->r_p[i]=0;
+
+    csc *Ai[i_max];
+    csr *Bi[i_max],*A_csr[i_max];
+    csr *temp[i_max+1];  temp[0] = C_csr;
 
     zero_padding(A,n);
     zero_padding(B_csr,n);
 
     for(int i=1;i<=i_max;i++){
-        int bp=1;
-        int k=0;
+        int bp=1, k=0;
         int block_size = m;
+//        cout << "Chunk start: " << chunk_start << ", Chunk end:" << chunk_end << endl;
 
-        csc *Ai = get_vertical_chunk(A,chunk_start, chunk_end);
-        csr *A_csr = csc2csr(Ai);
-
-        csr *Bi = (csr*)malloc(sizeof(csr));
-        Bi->rowS = m; Bi->colS = B_csr->colS;
-        Bi->r_p= B_csr->r_p + chunk_start;
-        Bi->col = B_csr->col + B_csr->r_p[chunk_start];
-        Bi->nnz = B_csr->r_p[chunk_end] - B_csr->r_p[chunk_start];
-
-        printCsr(Bi);
+        Ai[i-1] = get_vertical_chunk(A,chunk_start);
+        Bi[i-1] = get_horizontal_chunk(B_csr, chunk_start);
+        A_csr[i-1] = csc2csr(Ai[i-1]);
         
         // Rs[0] = ZERO_ROW
         Rs->r_p[0]=0; Rs->r_p[1]=0;
@@ -117,45 +117,50 @@ csc *bmm_four_russians(csc *A, csc *B,csc *C){
 
         for(int j=1;j<pow(2,m);j++){
             // Rs(j,:) = or(Rs(j-2^k,:),Bi(m+1 - (k+1),:));
-            or_rows(Bi,m-(k+1),    Rs,j-pow(2,k),   j,chunk_start);
-
-            if(bp==1){
-                bp=j+1;
-                k++;
-            }
-            else 
-                bp--;
+            or_rows(Bi[i-1],m-(k+1),    Rs,j-pow(2,k),   j,0);
+            loop_logic(&bp,&j,&k);
         }
 
-        free(Bi);
+        Rs->nnz = Rs->r_p[1<<m];
+//        printCsr(Rs);
 
-        Ci->r_p[0] = 0;
-        int nnz_c = 0;
+        int nnz_c = 0; Ci->r_p[0] = 0;
         for(int j=0;j<n;j++){
             
             // ind = num(Ai(j,:))
-            int s = A_csr->r_p[j];
-            int f = A_csr->r_p[j+1];
-            int ind = num(A_csr->col + (j+chunk_start),f-s,chunk_start);
-            ind = 1;
+            int s = A_csr[i-1]->r_p[j];
+            int f = A_csr[i-1]->r_p[j+1];
+            int ind = num(A_csr[i-1]->col + s,f-s,0);
+//            cout << ind << endl;
 
             //Ci(j,:) = Rs(ind,:);
             s = Rs->r_p[ind];
             f = Rs->r_p[ind+1];
 
             for(int k=s;k<f;k++){
-                Ci->col[nnz_c++] = Rs->col[k];
-//                cout << Rs->col[k] << endl;
+                Ci->col[nnz_c++] = Rs->col[k]; //cout << Rs->col[k] << endl;
             }
-//            cout << endl;
             Ci->r_p[j+1] = nnz_c;
+            Ci->nnz = nnz_c;
         }
 
-        destroyCsr(A_csr);
+        cout << endl << endl << "Ci:" << endl; printCsr(Ci);
+        temp[i] = or_csr(temp[i-1],Ci);
+        cout << "temp:" << endl;                printCsr(temp[i]);
+
+//        destroyCsc(Ai[i-1]); destroyCsr(Bi[i-1]); destroyCsr(A_csr[i-1]);
     }
 
-//    printCsr(Ci);
+    for (int i = 0; i < i_max; ++i) {
+        destroyCsr(Bi[i]);
+        destroyCsr(A_csr[i]);
+        destroyCsc(Ai[i]);
+    }
 
+    C = csr2csc(C_csr);
+//    printCsr(C_csr);
+
+    destroyCsr(Ci); destroyCsr(B_csr); destroyCsr(C_csr); destroyCsr(Rs);
     return C;
 }
 
@@ -191,6 +196,15 @@ void or_rows(csr *A, int i1, csr *Rs, int j1, int i_targ, int offset){
     }
 
     Rs->r_p[i_targ+1] = Rs->r_p[i_targ] + un;
+
+//    printf("Bi(s=%d):",size1);
+//    printV<int>(r1,size1);
+//
+//    printf("Rs(j,:)(s=%d):",size2);
+//    printV<int>(r2,size2);
+//
+//    cout << "targ";
+//    printV<int>(targ,un); cout << endl << endl;
 }
 
 /*
@@ -199,6 +213,7 @@ void or_rows(csr *A, int i1, csr *Rs, int j1, int i_targ, int offset){
  * result: 2^0+2^3+2^5=41
  */
 int num(int *Ai, int n, int offset){
+    if (n==0) return 0;
     int logic = Ai[0]-offset;
     int res = (logic == 0) ? 1 : 0;
     int i_0 = (logic == 0) ? 1 : 0;
@@ -206,14 +221,17 @@ int num(int *Ai, int n, int offset){
         res+= 2<<(Ai[i]-1-offset);
     }
 
+//    printf("v(s=%d)=",n);
+//    printV<int>(Ai,n);
+
     return res;
 }
 
-csc *get_vertical_chunk(csc *A, int start, int end){
+csc *get_vertical_chunk(csc *A, int start){
     int n = A->rowS;
     int m = (int) floor(log2(n));
 
-    int nnz_chnk = A->col_ptr[end] - A->col_ptr[start];
+    int nnz_chnk = A->col_ptr[start+m] - A->col_ptr[start];
     int offs = A->col_ptr[start];
 
     csc *Ai = initCsc(n,m, nnz_chnk);
@@ -224,6 +242,89 @@ csc *get_vertical_chunk(csc *A, int start, int end){
     for(int r=0;r<nnz_chnk;r++)
         Ai->row[r] = A->row[r+offs];
 
+    Ai->col_ptr[m] = nnz_chnk;
 
     return Ai;
+}
+
+csr *get_horizontal_chunk(csr *B, int start){
+    int n = B->colS;
+    int m = (int) floor(log2(n));
+
+    int nnz_chnk = B->r_p[start+m] - B->r_p[start];
+    int offs = B->r_p[start];
+
+    csr *Bi = initCsr(m,n,nnz_chnk);
+
+    for(int c=0;c<m+1;c++)
+        Bi->r_p[c] = B->r_p[start+c] - offs;
+
+    for(int r=0;r<nnz_chnk;r++)
+        Bi->col[r] = B->col[r+offs];
+
+    Bi->r_p[m] = nnz_chnk;
+
+    return Bi;
+}
+
+/*
+ * Calculates the hadamard OR result of 
+ * sparse matrices A and B (in CSR format)
+ */
+csr *or_csr(csr *A, csr *B){
+    if(!((A->colS == B->colS) && (A->rowS == B->rowS))) {
+        printf("Or function ERROR: Matrice Dims Mismatch\n");
+        exit(1);
+    } 
+
+    csr *res = (csr*) initCsr(A->rowS,A->colS,nnz(A) + nnz(B));
+    int *v = my_malloc<int>(A->rowS);
+
+    res->r_p[0] = 0;
+    int nnz = 0;
+
+    for(int r=0;r<A->rowS;r++){
+        int s1 = A->r_p[r];
+        int s2 = B->r_p[r];
+        int n1 = A->r_p[r+1] - s1;
+        int n2 = B->r_p[r+1] - s2;
+
+        int *v1 = A->col + s1;
+        int *v2 = B->col + s2;
+
+        int nnz_row = vector_or(v1,n1,v2,n2,v+nnz);
+        nnz+=nnz_row;
+        res->r_p[r+1] = nnz;
+    }
+
+    free(res->col);
+    res->col = v;
+
+    return res;
+}
+
+int vector_or(int *r1, int size1, int *r2, int size2, int *dest){
+
+    int i=0,j=0,un=0;
+
+    while(i<size1 && j<size2){
+        if(r1[i] < r2[j])
+            dest[un++] = r1[i++];
+        else if(r1[i] > r2[j])
+            dest[un++] = r2[j++];
+        else {
+            dest[un++] = r1[i++];
+            j++;
+        }
+    }
+
+    while(i<size1){
+        dest[un++] = r1[i++];
+    }
+
+    while(j<size2){
+        dest[un++] = r2[j++];
+    }
+
+    return un;
 }
