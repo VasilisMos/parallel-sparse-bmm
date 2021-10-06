@@ -20,7 +20,7 @@ inline void loop_logic(int *bp, int *j, int *k){
 csc *get_vertical_chunk(csc *A, int start);
 csr *get_horizontal_chunk(csr *B, int start);
 
-int num(int *Ai, int n, int offset);
+int num(int *Ai, int n, int offset, int dim);
 void or_rows(csr *A, int i1, csr *Rs, int j1, int i_targ, int offset);
 csr *or_csr(csr *A, csr *B);
 int vector_or(int *r1, int size1, int *r2, int size2, int *dest);

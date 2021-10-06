@@ -9,12 +9,13 @@ void test_bmm_four_russians(){
     csc *C;// = initCsc(A->rowS,B->colS, 2*(A->nnz + B->nnz));
     
     print_version(A,B,C);
-    t1 = tic(); bmm_four_russians(A,B,C); t2 = toc(); time_elapsed(t2,t1);
+    t1 = tic();
+    C = bmm_four_russians(A,B,C); t2 = toc(); time_elapsed(t2,t1);
     std::cout << std::endl;
 
-//    write_times(A->rowS, t1,t2, SEQUENTIAL,1);
-//    write_mtx_csc(C, fname3);
-    destroyCsc(A); destroyCsc(B); //destroyCsc(C);
+    write_times(A->rowS, t1,t2, SEQUENTIAL,1);
+    write_mtx_csc(C, fname3);
+    destroyCsc(A); destroyCsc(B); // destroyCsc(C);
 }
 
 void test_csc2csr(){

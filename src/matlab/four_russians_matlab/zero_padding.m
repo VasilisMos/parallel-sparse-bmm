@@ -1,8 +1,10 @@
 function A_pad = zero_padding(A,n,type)
 
-    index_max = ceil(n/log2(n)) * floor(log2(n));
+    m = floor(log2(n));
+    index_max = ceil(n/m) * m;
 
     if(index_max>n) %Needs Padding
+        fprintf("Doing padding of %d\n",index_max-n);
         if(type==0)
             A_pad = [A zeros(n,index_max-n)];
         else

@@ -380,18 +380,13 @@ void printCsr(csr *a){
 
     printf("Csr: dims=(%d,%d)",a->rowS,a->colS);
     printf(", nnz=%d\n",a->nnz);
-    printf("col = [");
-    
-    for (i = 0; i < a->nnz; i++)
-    {
-        if (i == a->r_p[r_n])
-        {
-            printf(",  ");
-            r_n++;
-        }
-        printf("%d ", a->col[i]);
-    }
-    printf("]\n");
+    printf("col = [ ");
+
+    for(i=0;i<a->rowS;i++){
+        for(int j=a->r_p[i]; j<a->r_p[i+1];j++){
+            printf("%d ",a->col[j]);
+        }printf(", ");
+    } printf("]\n");
 
     printf("row = [");
     for (i = 0; i < n + 1; i++)
@@ -411,15 +406,13 @@ void printCsc(csc *a){
    
   printf("Csc: dims=(%d,%d)",a->rowS,a->colS);
   printf(", nnz=%d\n",a->nnz);
-  printf("row = [");
+  printf("row = [ ");
 
-  for(i=0;i<a->nnz;i++){
-      if(i == a->col_ptr[r_n]){
-          printf(",  ");
-          r_n++;
-      }
-    printf("%d ",a->row[i]);
-  } printf("]\n");
+  for(i=0;i<a->rowS;i++){
+        for(int j=a->col_ptr[i]; j<a->col_ptr[i+1];j++){
+            printf("%d ",a->row[j]);
+        }printf(", ");
+    } printf("]\n");
 
   printf("col = [");
   for(i=0;i<n+1;i++){

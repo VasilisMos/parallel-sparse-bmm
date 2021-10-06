@@ -1,27 +1,29 @@
-n=120;
+% function main(n=12)
+n=18;
 
-A = rand_matrix(n,0.4);
-B = rand_matrix(n,0.4);
+fnameA = "../../../datasets/test/A_test.mtx";
+fnameB = "../../../datasets/test/B_test.mtx" ;
+fnameC = "../../../datasets/test/C_result.mtx";
+
+A = rand_matrix(n,0.1);
+B = rand_matrix(n,0.1);
+
+A = mmread(fnameA);
+B = mmread(fnameB);
+C = mmread(fnameC);
 
 % Normal BMM
 C_ground = A*B > 0;
 
 tic;
-C = four_russians(A,B); toc;
+% C = four_russians(A,B); 
+toc;
 
-spy(C-C_ground)
+dif = C-C_ground;
 
-
-
-%% Test Case
-% A = [1 1 0 0 0
-%      0 0 1 1 1
-%      1 0 0 1 0
-%      1 0 0 1 1
-%      1 0 1 0 1];
-
-% B = [0 1 0 0 1
-%      0 0 0 0 0
-%      1 1 0 0 1
-%      1 0 1 0 0
-%      1 1 0 1 0];
+if(nnz(dif))
+    spy(dif)
+    pause; close all;
+else
+    disp('Results match, TEST PASSED');
+end

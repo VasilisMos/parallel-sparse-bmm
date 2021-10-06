@@ -1,6 +1,5 @@
 #include "bmm_four_russians.hpp"
 #define chunk_start ((i-1)*block_size)
-#define chunk_end (i*block_size-1)
 
 csr *csc2csr(csc *A){
     int rowS = A->rowS, colS = A->colS;
@@ -88,16 +87,17 @@ csc *bmm_four_russians(csc *A, csc *B,csc *C){
     int m = (int) floor(log2(n));
     int i_max = (int)ceil(n/m);
 
-    csr *B_csr = csc2csr(B);
-    csr *Rs = initCsr((int)pow(2,m), n, 3*(nnz(A) + nnz(B)));
+    struct timespec t1,t2;
 
+    csr *Rs = initCsr((int)(1<<m), n, 3*(nnz(A) + nnz(B)));
     csr *Ci = initCsr(A->rowS, B->colS, 3*(nnz(A) + nnz(B)));
+
+    csr *B_csr = csc2csr(B);
     csr *C_csr = initCsr(A->rowS, B->colS, 3*(nnz(A) + nnz(B)));
     C_csr->nnz=0; for(int i=0;i<C_csr->rowS+1;i++) C_csr->r_p[i]=0;
 
     csc *Ai[i_max];
-    csr *Bi[i_max],*A_csr[i_max];
-    csr *temp[i_max+1];  temp[0] = C_csr;
+    csr *Bi[i_max], *A_csr[i_max], *temp[i_max+1];  temp[0] = C_csr;
 
     zero_padding(A,n);
     zero_padding(B_csr,n);
@@ -107,6 +107,7 @@ csc *bmm_four_russians(csc *A, csc *B,csc *C){
         int block_size = m;
 //        cout << "Chunk start: " << chunk_start << ", Chunk end:" << chunk_end << endl;
 
+
         Ai[i-1] = get_vertical_chunk(A,chunk_start);
         Bi[i-1] = get_horizontal_chunk(B_csr, chunk_start);
         A_csr[i-1] = csc2csr(Ai[i-1]);
@@ -115,14 +116,13 @@ csc *bmm_four_russians(csc *A, csc *B,csc *C){
         Rs->r_p[0]=0; Rs->r_p[1]=0;
         Rs->col[0]=0;
 
-        for(int j=1;j<pow(2,m);j++){
+        for(int j=1;j<(1<<m);j++){
             // Rs(j,:) = or(Rs(j-2^k,:),Bi(m+1 - (k+1),:));
-            or_rows(Bi[i-1],m-(k+1),    Rs,j-pow(2,k),   j,0);
+            or_rows(Bi[i-1],m-(k+1),    Rs,j-(1<<k),   j,0);
             loop_logic(&bp,&j,&k);
         }
 
         Rs->nnz = Rs->r_p[1<<m];
-//        printCsr(Rs);
 
         int nnz_c = 0; Ci->r_p[0] = 0;
         for(int j=0;j<n;j++){
@@ -130,7 +130,7 @@ csc *bmm_four_russians(csc *A, csc *B,csc *C){
             // ind = num(Ai(j,:))
             int s = A_csr[i-1]->r_p[j];
             int f = A_csr[i-1]->r_p[j+1];
-            int ind = num(A_csr[i-1]->col + s,f-s,0);
+            int ind = num(A_csr[i-1]->col + s,f-s,0,A_csr[i-1]->colS);
 //            cout << ind << endl;
 
             //Ci(j,:) = Rs(ind,:);
@@ -138,18 +138,15 @@ csc *bmm_four_russians(csc *A, csc *B,csc *C){
             f = Rs->r_p[ind+1];
 
             for(int k=s;k<f;k++){
-                Ci->col[nnz_c++] = Rs->col[k]; //cout << Rs->col[k] << endl;
+                Ci->col[nnz_c++] = Rs->col[k]; 
             }
             Ci->r_p[j+1] = nnz_c;
             Ci->nnz = nnz_c;
         }
 
-        cout << endl << endl << "Ci:" << endl; printCsr(Ci);
-        temp[i] = or_csr(temp[i-1],Ci);
-        cout << "temp:" << endl;                printCsr(temp[i]);
-
-//        destroyCsc(Ai[i-1]); destroyCsr(Bi[i-1]); destroyCsr(A_csr[i-1]);
+        temp[i] = or_csr(temp[i-1],Ci);  //printCsr(temp[i]);
     }
+
 
     for (int i = 0; i < i_max; ++i) {
         destroyCsr(Bi[i]);
@@ -157,10 +154,10 @@ csc *bmm_four_russians(csc *A, csc *B,csc *C){
         destroyCsc(Ai[i]);
     }
 
-    C = csr2csc(C_csr);
-//    printCsr(C_csr);
+    C = csr2csc(temp[i_max]);
 
-    destroyCsr(Ci); destroyCsr(B_csr); destroyCsr(C_csr); destroyCsr(Rs);
+//    destroyCsr(Ci); destroyCsr(B_csr); destroyCsr(C_csr); destroyCsr(Rs);
+    cout << "Exiting BMM.." << endl;
     return C;
 }
 
@@ -196,15 +193,6 @@ void or_rows(csr *A, int i1, csr *Rs, int j1, int i_targ, int offset){
     }
 
     Rs->r_p[i_targ+1] = Rs->r_p[i_targ] + un;
-
-//    printf("Bi(s=%d):",size1);
-//    printV<int>(r1,size1);
-//
-//    printf("Rs(j,:)(s=%d):",size2);
-//    printV<int>(r2,size2);
-//
-//    cout << "targ";
-//    printV<int>(targ,un); cout << endl << endl;
 }
 
 /*
@@ -212,17 +200,16 @@ void or_rows(csr *A, int i1, csr *Rs, int j1, int i_targ, int offset){
  * Example Ai={0,3,5}
  * result: 2^0+2^3+2^5=41
  */
-int num(int *Ai, int n, int offset){
+int num(int *Ai, int n, int offset,int dim){
     if (n==0) return 0;
-    int logic = Ai[0]-offset;
-    int res = (logic == 0) ? 1 : 0;
-    int i_0 = (logic == 0) ? 1 : 0;
-    for(int i=i_0;i<n;i++){
-        res+= 2<<(Ai[i]-1-offset);
-    }
 
-//    printf("v(s=%d)=",n);
-//    printV<int>(Ai,n);
+    int res = 0; // = (logic == 0) ? 1 : 0;
+    for(int i=0;i<n;i++){
+        if(Ai[i] < dim-1)
+            res+= 2<<(dim - (Ai[i])-2);
+        else
+            res++;
+    }
 
     return res;
 }
@@ -278,7 +265,7 @@ csr *or_csr(csr *A, csr *B){
     } 
 
     csr *res = (csr*) initCsr(A->rowS,A->colS,nnz(A) + nnz(B));
-    int *v = my_malloc<int>(A->rowS);
+    int *v = my_malloc<int>(3 * (A->rowS + B->colS));
 
     res->r_p[0] = 0;
     int nnz = 0;
@@ -299,6 +286,9 @@ csr *or_csr(csr *A, csr *B){
 
     free(res->col);
     res->col = v;
+    res->nnz = nnz;
+
+//    printV<int>(v,nnz);
 
     return res;
 }
@@ -318,13 +308,11 @@ int vector_or(int *r1, int size1, int *r2, int size2, int *dest){
         }
     }
 
-    while(i<size1){
+    while(i<size1)
         dest[un++] = r1[i++];
-    }
 
-    while(j<size2){
+    while(j<size2)
         dest[un++] = r2[j++];
-    }
 
     return un;
 }
