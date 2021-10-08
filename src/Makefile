@@ -17,7 +17,7 @@ DISTRIBUTED_FILES=./distributed/distributed.cpp ./distributed/bmm_distributed.cp
 
 all: sequential distributed multithreaded
 
-.PHONY: sequential distributed multithreaded four_russians
+.PHONY: sequential distributed multithreaded four_russians masked
 
 # ----- Matlab/Octave I/O
 data:
@@ -26,6 +26,13 @@ data:
 		echo "----Generating Data----" >> ../logs/generate_data.txt
 		cd ./matlab && octave generateDatasets.m >> ../../logs/generate_data.txt
 		echo "----Data Generated Successfully" >> ../logs/generate_data.txt
+
+filter:
+		bash ./bash_src/set_filter_parameters.sh $(N) $(D)
+		date "+%H:%M:%S   %d/%m/%y" > ../logs/generate_data.txt
+		echo "----Generating Filter Data----" >> ../logs/generate_data.txt
+		cd ./matlab && octave generate_filter.m >> ../../logs/generate_data.txt
+		echo "----Filter Data Generated Successfully" >> ../logs/generate_data.txt
 
 validate_results:
 		cd ./matlab && octave getResults.m
@@ -40,6 +47,10 @@ test_distributed: data distributed
 		clear && mpirun -np $(MPI_PROCS) ./distributed.out && rm ./distributed.out
 test_multithreaded: data multithreaded
 		clear && ./multithreaded.out ${THREAD_NUM} && rm ./multithreaded.out
+
+test_masked: filter masked
+		clear && ./masked.out && rm ./masked.out
+
 fast_test: sequential
 		./seq.out && rm ./seq.out
 
@@ -70,7 +81,10 @@ distributed:
 		$(MPICC) $(OPTIMIZATION) $(HEADERS) $(SPARSE_HEADERS) -o distributed.out $(DISTRIBUTED_FILES) $(FLAGS)
 
 four_russians:
-		$(CC) $(OPTIMIZATION) $(HEADERS) $(SPARSE_HEADERS) -o four_russ.out ./four_russians/bmm_four_russians.cpp ./four_russians/main.cpp $(FLAGS)
+		$(CC) $(OPTIMIZATION) $(HEADERS) $(SPARSE_HEADERS) -o four_russ.out ./four_russians/bmm_four_russians.cpp ./four_russians/main.cpp ./four_russians/four_russians_utils.cpp $(FLAGS)
+
+masked:
+		$(CC) $(OPTIMIZATION) $(HEADERS) $(SPARSE_HEADERS) -o masked.out ./sequential/sequential_masked.cpp ./sparse/masked_bmm.cpp $(FLAGS)
 
 # ----- Measure Performance
 performance:

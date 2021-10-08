@@ -89,7 +89,7 @@ csc *bmm_four_russians(csc *A, csc *B,csc *C){
 
     struct timespec t1,t2;
 
-    csr *Rs = initCsr((int)(1<<m), n, 3*(nnz(A) + nnz(B)));
+    csr *Rs = initCsr((int)(1<<m), n, 10*(nnz(A) + nnz(B)));
     csr *Ci = initCsr(A->rowS, B->colS, 3*(nnz(A) + nnz(B)));
 
     csr *B_csr = csc2csr(B);
@@ -102,11 +102,13 @@ csc *bmm_four_russians(csc *A, csc *B,csc *C){
     zero_padding(A,n);
     zero_padding(B_csr,n);
 
+    cout << i_max << endl;
+
+    t1 = tic();
     for(int i=1;i<=i_max;i++){
         int bp=1, k=0;
         int block_size = m;
 //        cout << "Chunk start: " << chunk_start << ", Chunk end:" << chunk_end << endl;
-
 
         Ai[i-1] = get_vertical_chunk(A,chunk_start);
         Bi[i-1] = get_horizontal_chunk(B_csr, chunk_start);
@@ -119,11 +121,12 @@ csc *bmm_four_russians(csc *A, csc *B,csc *C){
         for(int j=1;j<(1<<m);j++){
             // Rs(j,:) = or(Rs(j-2^k,:),Bi(m+1 - (k+1),:));
             or_rows(Bi[i-1],m-(k+1),    Rs,j-(1<<k),   j,0);
+//            or_rows2(Bi[i-1],m-(k+1),    Rs,j-(1<<k),   j, Bi[i-1]->r_p[m-(k+1)]);
             loop_logic(&bp,&j,&k);
         }
 
         Rs->nnz = Rs->r_p[1<<m];
-
+        
         int nnz_c = 0; Ci->r_p[0] = 0;
         for(int j=0;j<n;j++){
             
@@ -144,21 +147,48 @@ csc *bmm_four_russians(csc *A, csc *B,csc *C){
             Ci->nnz = nnz_c;
         }
 
+        
         temp[i] = or_csr(temp[i-1],Ci);  //printCsr(temp[i]);
+        
     }
+    t2 = toc(); time_elapsed(t2,t1);
 
-
+    
     for (int i = 0; i < i_max; ++i) {
         destroyCsr(Bi[i]);
         destroyCsr(A_csr[i]);
         destroyCsc(Ai[i]);
     }
+    
+    C = csr2csc(temp[i_max]); 
 
-    C = csr2csc(temp[i_max]);
-
-//    destroyCsr(Ci); destroyCsr(B_csr); destroyCsr(C_csr); destroyCsr(Rs);
+   destroyCsr(Ci); destroyCsr(B_csr); destroyCsr(C_csr); destroyCsr(Rs);
     cout << "Exiting BMM.." << endl;
     return C;
+}
+
+void or_rows2(csr *A, int i1, csr *Rs, int j1, int i_targ, int offset){
+    int size1 = A->r_p[i1+1] - A->r_p[i1];
+    int size2 = Rs->r_p[j1+1] - Rs->r_p[j1];
+    int nz=0;
+
+    int *r1 = A->col + (A->r_p[i1]);
+    int *r2 = Rs->col + (Rs->r_p[j1]);
+    int *targ = Rs->col + (Rs->r_p[i_targ]);
+
+    int max_size = size1 + size2;
+    int arr[max_size];  memset(arr,0,max_size);
+
+    for(int i=0;i<size1;i++)
+        arr[i]=r1[i];
+
+    for(int i=size1;i<size1 + size2;i++)
+        arr[i]=r2[i];
+
+    mergesort(arr,0,max_size);
+    nz = unique(targ, arr, max_size);
+
+    Rs->r_p[i_targ+1] = Rs->r_p[i_targ] + nz;
 }
 
 void or_rows(csr *A, int i1, csr *Rs, int j1, int i_targ, int offset){
@@ -174,44 +204,27 @@ void or_rows(csr *A, int i1, csr *Rs, int j1, int i_targ, int offset){
     int *targ = Rs->col + (Rs->r_p[i_targ]);
 
     while(i<size1 && j<size2){
-        if(r1[i]-offset < r2[j])
-            targ[un++] = r1[i++] - offset;
-        else if(r1[i]-offset > r2[j])
+        if(r1[i] < r2[j])
+            targ[un++] = r1[i++];
+        else if(r1[i] > r2[j])
             targ[un++] = r2[j++];
         else {
-            targ[un++] = r1[i++] - offset;
+            targ[un++] = r1[i++];
             j++;
         }
     }
 
-    while(i<size1){
+    while(i<size1)
         targ[un++] = r1[i++] - offset;
-    }
 
-    while(j<size2){
-        targ[un++] = r2[j++];
-    }
+    for(;j<size2;j++)
+        targ[un++] = r2[j];
+
+//    while(i<size1 && j<size2){
+//        targ[un++] = r1[i++] - offset;
+//    }
 
     Rs->r_p[i_targ+1] = Rs->r_p[i_targ] + un;
-}
-
-/*
- * num(): Sum Of Powers of 2, Specified by Input Vector Ai
- * Example Ai={0,3,5}
- * result: 2^0+2^3+2^5=41
- */
-int num(int *Ai, int n, int offset,int dim){
-    if (n==0) return 0;
-
-    int res = 0; // = (logic == 0) ? 1 : 0;
-    for(int i=0;i<n;i++){
-        if(Ai[i] < dim-1)
-            res+= 2<<(dim - (Ai[i])-2);
-        else
-            res++;
-    }
-
-    return res;
 }
 
 csc *get_vertical_chunk(csc *A, int start){
