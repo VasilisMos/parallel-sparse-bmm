@@ -1,5 +1,12 @@
 #include "bmm_multithread.hpp"
 
+#define A(p,q) Abl[( (p) * (nb) + (q) )]
+#define B(p,q) Bbl[( (p) * (nb) + (q) )]
+#define C(p,q) Cbl[( (p) * (nb) + (q) )]
+#define Aps A(p,s)
+#define Bsq B(s,q)
+#define Cpq C(p,q)
+
 csc *block_bmm(csc **A,csc **B,csc ** temps, int nb,int pid){
 
     for (int s = 0; s < nb; s++) // C(p,q) = A(p,:)*B(:,q)
@@ -20,7 +27,7 @@ void run_bmm_multithread(int total_procs){
 
     csc *A = (csc *)parse_data(fname1, CSC);
     csc *B = (csc *)parse_data(fname2, CSC);
-    C = initCsc(A->rowS, B->colS, 3 * (A->nnz + B->nnz));  print_version(A, B, C); printf("Num of Processes:%d\n", total_procs); 
+    C = initCsc(A->rowS, B->colS, 6 * (A->nnz + B->nnz));  print_version(A, B, C); printf("Num of Processes:%d\n", total_procs); 
     initiation = TIC
 
     t0 = TIC
@@ -33,6 +40,7 @@ void run_bmm_multithread(int total_procs){
     finishing = TOC 
     cout << "Block Creation:"; time_elapsed(t1,t0);
     cout << "Total time: "; time_elapsed(finishing, initiation);
+    cout << "C nnz=" << C->nnz << endl;
 
     //Finalize
     write_times(A->rowS,initiation,finishing,MULTITHREADED,total_procs);
@@ -50,8 +58,9 @@ csc *bmm_multithreads(csc **Abl_total, csc **Bbl_total, int total_procs){
     csc **Cbl_total = (csc**)malloc( total_procs * total_procs * sizeof(csc*) );
     omp_set_num_threads(total_procs);
 
-    struct timespec t1 = tic();
+    struct timespec t1,t2;
 
+    t1 = tic();
 #pragma omp parallel shared(Abl_total, Bbl_total,Cbl_total) num_threads(total_procs)
 {
     int proc_num = omp_get_thread_num();
@@ -71,11 +80,15 @@ csc *bmm_multithreads(csc **Abl_total, csc **Bbl_total, int total_procs){
 
         Cbl_total[ i * total_procs + proc_num ] = block_bmm(Abl, Bbl, temps, total_procs, proc_num);
     }    
-}
+}   
+    t2 = toc();
+    cout << "Parallel Region:"; time_elapsed(t2,t1);
+    
+    t1 = tic();
     unify_blocks(C, Cbl_total, total_procs);
+    t2 = toc();
 
-    struct timespec t2 = toc();
-    time_elapsed(t2,t1);
+    cout << "Unify blocks:"; time_elapsed(t2,t1);
 
     return C;
 }

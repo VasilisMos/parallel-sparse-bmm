@@ -8,7 +8,19 @@
 #define Bsq B(s,q)
 #define Cpq C(p,q)
 
-#define PRINT_2 0
+template <typename T>
+T *my_malloc(int size){
+    T* res = (T*)malloc(size * sizeof(T));
+
+    if (res == NULL){
+        printf("Error in malloc\n");
+        exit(1);
+    }
+
+    return res;
+}
+
+int *v;
 
 void bmm_blocking(csc *A, csc *B, csc *C){
 
@@ -21,49 +33,46 @@ void bmm_blocking(csc *A, csc *B, csc *C){
     csc ** Bbl = create_blocks(B,nb); // Matrix B cut in blocks
     csc ** Cbl = create_blocks(C,nb); // Empty matrix to store C
 
-    csc **temps = (csc**)malloc( nb * sizeof(csc*) );
+    csc ** temps = (csc**)malloc( nb * sizeof(csc*) );
+    v = my_malloc<int>(A->nnz);
 
-    /* Classical bmm useful Variables */
-    int nnz = 0;
-
-// #pragma omp parallel for
     for (int q = 0; q < nb; q++)          // Calculate C(:,q)
     {
 
-        for(int i=0;i<nb;i++) temps[i] = initCsc(b,b,A->nnz + B->nnz);
+        for(int i=0;i<nb;i++) temps[i] = initCsc(b,b,2*(A->nnz + B->nnz));
 
         for (int p = 0; p < nb; p++)      // Being at C(p,q) = 0;
         {
             for (int s = 0; s < nb; s++) // C(p,q) = A(p,:)*B(:,q)
             {
-                temps[s] = initCsc(b,b, (A->nnz + B->nnz)/nb/nb*3);
+//                temps[s] = initCsc(b,b, (A->nnz + B->nnz)/nb/nb*3);
                 bmm(Aps, Bsq, temps[s]);
-
             }
             merge_blocks(Cpq,temps,nb);
         }
     }
 
     unify_blocks(C, Cbl, nb);
+    free(v);
 }
 
 void merge_blocks(csc *dest, csc **temps, int nb){
 
     csc *Cb = dest;  Cb->nnz = 0; Cb->col_ptr[0] = 0;
-    int v[nb * temps[0]->nnz + 2], colSize = dest->colS;
-
-    // printf("Colsize = (%d,%d)\n",dest->rowS,dest->colS);
+    int *v = my_malloc<int>(nb * temps[0]->nnz + 2);
+    int colSize = dest->colS;
 
     // For each Cpq(:,j)
     for(int j = 0, nnz_col=0; j<colSize; j++,nnz_col=0 ){
         // For each subblock of total nb subblocks
         for(int s=0; s<nb;s++){
             csc *temp = temps[s];
-            int start = temp->col_ptr[j];
-            int end = temp->col_ptr[j+1];
+            int start = temps[s]->col_ptr[j];
+            int end = temps[s]->col_ptr[j+1];
 
             for(int i=0;i<end-start;i++)
-                v[nnz_col++] = temp->row[start+i];
+                v[nnz_col++] = temps[s]->row[start+i];
+
         }
 
         mergesort<int>(v,0,nnz_col-1);
@@ -162,6 +171,7 @@ csc *unify_blocks(csc *C, csc **Cbl, int nb){
         {
             for (int p = 0; p < nb; p++)
             {
+                Cpq->col_ptr[0] = 0;
                 int start = Cpq->col_ptr[j_loc];
                 int end = Cpq->col_ptr[j_loc+1];
 

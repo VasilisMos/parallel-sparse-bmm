@@ -20,7 +20,7 @@ void test_bmm_sparse_blocking(){
 
     csc *A = (csc*)parse_data(fname1, CSC);
     csc *B = (csc*)parse_data(fname2, CSC);
-    csc *C = initCsc(A->rowS,B->colS, 2*(A->nnz + B->nnz));
+    csc *C = initCsc(A->rowS,B->colS, 7*(A->nnz + B->nnz));
     
     print_version(A,B,C);
     t1 = tic(); bmm_blocking(A,B,C); t2 = toc(); time_elapsed(t2,t1);
@@ -33,7 +33,7 @@ void test_bmm_sparse_blocking(){
 
 int main(int argc, char * argv[]){
     
-    test_bmm_sparse_fast();
+    // test_bmm_sparse_fast();
     test_bmm_sparse_blocking();
     // test_blocking_creation(BLOCKING_FACTOR);
 

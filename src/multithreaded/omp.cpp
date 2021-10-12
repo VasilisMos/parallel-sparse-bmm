@@ -1,5 +1,6 @@
 #include "../headers/testing.hpp"
 #include "bmm_multithread.hpp"
+#include "masked_bmm_multithread.hpp"
 #include "../headers/parameters.hpp"
 #include <string.h>
 #include <omp.h>
@@ -58,6 +59,7 @@ int main(int argc, char *argv[]){
 
     // bmm_wrapper(bmm_blocking, fname1, fname2, fname3, SEQUENTIAL, 1);
     run_bmm_multithread(total_procs);
+    // run_bmm_masked_mulithreaded(total_procs);
     // bmm_wrapper(bmm_blocking_mult, fname1, fname2, fname3, MULTITHREADED, total_procs);
 
     printf("Main is exiting successfully\n");

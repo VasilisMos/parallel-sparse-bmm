@@ -40,19 +40,33 @@ csc **rcv_blocks(int total_procs, int sender){
     return M;
 }
 
+csc *rcv_block(int sender){
 
+    int buf[2];
+    MPI_Recv(buf, 2, MPI_INT, sender, TAG_PARAM, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
+    csc *M = initCsc(buf[0], buf[0], buf[1]);
 
-// init_buffer(buf, Abl_send[j]);
-// isend_v(buf, 2, RIGHT, TAG_PARAM, reqs + (3 * j));
-// isend_v(Abl_send[j]->col_ptr, buf[0] + 1, RIGHT, TAG_COL, reqs + (3 * j + 1));
-// isend_v(Abl_send[j]->row, buf[1], RIGHT, TAG_ROW, reqs + (3 * j + 2));
+    MPI_Recv(M->col_ptr, M->rowS + 1, MPI_INT, sender, TAG_COL, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    MPI_Recv(M->row, M->nnz, MPI_INT, sender, TAG_ROW, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-// void block_bmm(csc **A,csc **B, csc *C,csc ** temps, int nb,int pid){
+    return M;
+}
 
-//     for (int s = 0; s < nb; s++) // C(p,q) = A(p,:)*B(:,q)
-//         bmm(A[s], B[s], temps[s]);
+csc **rcv_blocks2(int block_vec_length, int sender){
 
-//     C = initCsc( B[0]->rowS, B[0]->colS,  A[0]->nnz + B[0]->nnz );
-//     merge_blocks(C, temps, nb);
-// }
+    csc ** M = (csc**)malloc( block_vec_length * sizeof(csc*) );
+    int buf[2];
+
+    for (int i = 0; i < block_vec_length; i++)
+    {
+        MPI_Recv(buf, 2, MPI_INT, sender, TAG_PARAM, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+        M[i] = initCsc(buf[0], buf[0], buf[1]);
+
+        MPI_Recv(M[i]->col_ptr, M[i]->rowS + 1, MPI_INT, sender, TAG_COL, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(M[i]->row, M[i]->nnz, MPI_INT, sender, TAG_ROW, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    }
+
+    return M;
+}

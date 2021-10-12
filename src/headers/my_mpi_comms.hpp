@@ -14,4 +14,7 @@ inline void init_buffer(int *buf, csc *A){
     *(buf+1) = A->nnz;
 }
 
+csc *rcv_block(int sender);
+csc **rcv_blocks2(int block_vec_length, int sender);
+
 #endif

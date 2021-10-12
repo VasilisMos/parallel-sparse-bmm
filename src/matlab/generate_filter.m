@@ -1,4 +1,4 @@
-function F = generate_filter(n=1e6,d=1e-5)
+function F = generate_filter(n=6.4e5,d=2e-5)
 %generate_filter - Generate a sparse Filter
 %
 % Syntax: F = generate_filter(n,d)

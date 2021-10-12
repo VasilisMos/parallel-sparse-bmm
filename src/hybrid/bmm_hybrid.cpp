@@ -1,13 +1,16 @@
-#include "bmm_distributed.hpp"
+#include "bmm_hybrid.hpp"
 #define RING_ENABLE 1
 #define curr_pos ( ((proc_num-i) % total_procs) < 0 ? ((proc_num-i) % total_procs) + total_procs : ((proc_num-i) % total_procs) )
 MPI_Request reqs[ 3 * 4 ];
 
-csc *block_bmm(csc **A,csc **B,csc ** temps, int nb,int pid){
+int total_threads;
 
+csc *block_bmm_parallel(csc **A,csc **B,csc ** temps, int nb,int pid){
+
+#pragma omp parallel for shared(A,B,temps) num_threads(2)
     for (int s = 0; s < nb; s++) // C(p,q) = A(p,:)*B(:,q)
         bmm(A[s], B[s], temps[s]);
-
+    
     csc *C = initCsc( B[0]->rowS, B[0]->colS, 5 * (A[0]->nnz + B[0]->nnz) );
     merge_blocks(C, temps, nb);
 
@@ -61,7 +64,7 @@ void run_bmm_master(int total_procs){
     }
 
     // Cbl[0] = block_bmm_unoptimized(Abl, Bbl, total_procs, MASTER);
-    Cbl[0] = block_bmm(Abl, Bbl, temps, total_procs, MASTER);
+    Cbl[0] = block_bmm_parallel(Abl, Bbl, temps, total_procs, MASTER);
 
 
     MPI_Barrier(MPI_COMM_WORLD); t0 = TIC 
@@ -103,7 +106,7 @@ void run_bmm_slave(int proc_num, int total_procs){
 
     for (int s = 0; s < total_procs; s++)   temps[s] = initCsc(Abl[s]->rowS, Bbl[s]->colS, 3 * (Abl[s]->nnz + Bbl[s]->nnz)); 
 
-    Cbl[proc_num] = block_bmm(Abl, Bbl, temps, total_procs, MASTER);
+    Cbl[proc_num] = block_bmm_parallel(Abl, Bbl, temps, total_procs, MASTER);
     MPI_Barrier(MPI_COMM_WORLD);
 
     ring(Abl, Bbl,Cbl, temps, proc_num, total_procs);
@@ -137,7 +140,7 @@ void ring(csc **Abl, csc**Bbl,csc **Cbl,csc **temps, int proc_num,int total_proc
             MPI_Barrier(MPI_COMM_WORLD);
         }
 
-        Cbl[curr_pos] = block_bmm(Abl_received, Bbl,temps, total_procs, proc_num);
+        Cbl[curr_pos] = block_bmm_parallel(Abl_received, Bbl,temps, total_procs, proc_num);
 
         for (int j = 0; j < total_procs; j++)
         {
@@ -146,9 +149,6 @@ void ring(csc **Abl, csc**Bbl,csc **Cbl,csc **temps, int proc_num,int total_proc
             Abl_received[j] = NULL;
         }
     }
-
-    // printf("P%d Ending ring\n",proc_num);
-    // MPI_Barrier(MPI_COMM_WORLD);
 }
 
 // End of File

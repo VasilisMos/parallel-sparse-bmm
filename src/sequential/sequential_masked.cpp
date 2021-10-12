@@ -10,11 +10,11 @@ void test_bmm_sparse_masked(){
 
     csc *A = (csc*)parse_data(fname1, CSC);
     csc *B = (csc*)parse_data(fname2, CSC);
-    csc *C = initCsc(A->rowS,B->colS, 2*(A->nnz + B->nnz));
     csc *F = (csc*)parse_data(fname_Filter, CSC);
+    csc *C = initCsc(A->rowS,B->colS, F->nnz);
     
     print_version(A,B,C);
-    t1 = tic(); masked_bmm(A,B,C,F); t2 = toc(); time_elapsed(t2,t1);
+    t1 = tic(); masked_bmm_blocking(A,B,C,F); t2 = toc(); time_elapsed(t2,t1);
     std::cout << std::endl;
 
     write_times(A->rowS, t1,t2, SEQUENTIAL,1);
