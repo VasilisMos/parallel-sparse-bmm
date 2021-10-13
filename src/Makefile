@@ -72,8 +72,7 @@ ultra_fast_test_distributed2:
 		mpirun -np $(MPI_PROCS) ./distributed2.out
 
 ultra_fast_test_hybrid:
-		export OMP_NUM_THREADS=1
-		mpirun -np $(MPI_PROCS) ./hybrid.out
+		mpirun -np $(MPI_PROCS) ./hybrid.out ${THREAD_NUM}
 
 ultra_fast_test_multithreaded:
 		./multithreaded.out ${THREAD_NUM}

@@ -38,14 +38,14 @@ csc *masked_bmm_multithreads(csc **Abl_total, csc **Bbl_total, csc **F_total, in
     for(int i=0;i<total_procs;i++){
         Bbl[i] = Bbl_total[ i * total_procs + proc_num ];
         Fbl[i] = F_total[ i * total_procs + proc_num ];
-        // temps[i] = initCsc(Bbl[i]->rowS, Bbl[i]->colS, 3 * (Bbl[i]->nnz + Bbl[i]->nnz) );
+        temps[i] = initCsc(Bbl[i]->rowS, Bbl[i]->colS, 3 * (Bbl[i]->nnz + Bbl[i]->nnz) );
     }
 
     for (int i = 0; i < total_procs; i++){
         for (int j = 0; j < total_procs; j++)
             Abl[j] = Abl_total[ i * total_procs + j];
 
-        temps[i] = initCsc(Bbl[i]->rowS, Bbl[i]->colS, 3 * (Bbl[i]->nnz + Bbl[i]->nnz) );
+//        temps[i] = initCsc(Bbl[i]->rowS, Bbl[i]->colS, 3 * (Bbl[i]->nnz + Bbl[i]->nnz) );
         Cbl_total[ i * total_procs + proc_num ] = masked_block_bmm(Abl, Bbl, temps, Fbl[i], total_procs, proc_num);
     }
 }
@@ -66,7 +66,7 @@ void run_bmm_masked_mulithreaded(int total_procs){
     csc *A = (csc *)parse_data(fname1, CSC);
     csc *B = (csc *)parse_data(fname2, CSC);
     csc *F = (csc *)parse_data(fnameF, CSC);
-    C = initCsc(A->rowS, B->colS, 6 * (A->nnz + B->nnz));  print_version(A, B, C); printf("Num of Processes:%d\n", total_procs); 
+    /*C = initCsc(A->rowS, B->colS, 6 * (A->nnz + B->nnz));*/  print_version(A, B, C); printf("Num of Processes:%d\n", total_procs); 
     initiation = TIC 
 
     t0 = TIC

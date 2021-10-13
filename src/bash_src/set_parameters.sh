@@ -12,7 +12,7 @@ set_params () {
 
 function generateDatasets(n=${1})
 %n = 1e4;
-d = 4;
+d = 2;
 A = sprand( n, n, d/n) > 0;
 B = sprand( n, n, d/n) > 0;
 tic; C = (A*B) > 0; t = toc

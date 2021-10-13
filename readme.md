@@ -4,17 +4,13 @@ This project implements a parallelization of Boolean Matrix Multiplication **A*B
 
 Software prerequisites to run this Project:
 
-1. `Octave` (also works with `MATLAB`)
+1. `Octave`
 2. `g++` compiler
-3. `Python3`
-
-## How Computation is done
-
-TODO.
+3. `OpenMPI` Library
 
 ## Generate Matrices A,B,C
 
-To generate Sparse Matrices **A,B,C**, simply open a `MATLAB\Octave` command prompt and move to the ./matlab directory of this Project and type:
+To generate Sparse Matrices **A,B,C**, simply open an `Octave` command prompt and move to the ./matlab directory of this Project and type:
 
     >> generate_datasets;
 
@@ -61,13 +57,9 @@ Here boolean matrix multiplication execution times are presented for each versio
 
 ## Results Validation
 
-To validate the produced results from the BMM type on a `MATLAB` command prompt at the location ./matlab:
-
-    >> valiadate_bmm_results;
-
 The validator at ./matlab/validate_bmm_results.m reads **A,B,C_result** from their respective files and checks whether **A*B = C_result** ('*' sign for boolean matrix multiplication operator).
 
-Similarly, on `Octave`, move to project directory and execute on command line:
+On `Octave`, move to project ./src directory and execute on command line:
 
     >> validate_bmm_results_octave;
 

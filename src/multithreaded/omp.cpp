@@ -57,10 +57,13 @@ int main(int argc, char *argv[]){
 
     total_procs = GET_INPUT;
 
-    // bmm_wrapper(bmm_blocking, fname1, fname2, fname3, SEQUENTIAL, 1);
+    // Comment out this to run simple multithreaded
     run_bmm_multithread(total_procs);
+    
+    
+    // // Comment out this to run masked multithreaded
     // run_bmm_masked_mulithreaded(total_procs);
-    // bmm_wrapper(bmm_blocking_mult, fname1, fname2, fname3, MULTITHREADED, total_procs);
+    
 
     printf("Main is exiting successfully\n");
 }
