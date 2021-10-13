@@ -1,6 +1,6 @@
 # Boolean Matrix Multiplication using Parallel Programming in C++
 
-This project implements a parallelization of Boolean Matrix Multiplication **A*B=C** in `C++`, where **A,B,C** are Sparse Matrices in CSC (*Compressed sparse column*) format. The parallelization is achieved with in two stages. The first, second,
+This project implements a parallelization of Boolean Matrix Multiplication **A*B=C** in `C++`, where **A,B,C** are Sparse Matrices in CSC (*Compressed sparse column*) format. The parallelization is achieved with in two stages (Multithreading:OpenMP, Distributed Programming:MPI)
 
 Software prerequisites to run this Project:
 
@@ -14,50 +14,33 @@ To generate Sparse Matrices **A,B,C**, simply open an `Octave` command prompt an
 
     >> generate_datasets;
 
-Alternatively, if `Octave` is installed, simply execute from project directory:
+Alternatively, simply execute from project ./src directory:
 
     $make data
     $make data N=5e6
 
-You can also change the dimensions and the sparsity level  of produced matrices at the top of file ./matlab/generateDatasets.m.
+You can also change the dimensions and the sparsity level  of produced matrices at the top of file ./src/bash_src/set_parameters.sh.
 
 ## Execute Boolean Matrix Multiplication
 
-To run the project on Windows with `gcc` run the following command on a cmd at the project folder:
+On a linux terminal (again on the project ./src folder) run (for testing and purge, respectively):
 
-    .\make.ps1 test
-
-Clean project executables, results with:
-
-    .\make.ps1 clean
-
-Similarly, on a linux terminal (again on the project main folder) run (for testing and purge, respectively):
-
-    make test
-    make test_omp  
-    make test_omp NUM_THREADS=x #to specify number x of spawned threads
-    make test_distributed  
-    make test_distributed MPI_PROCS=x #to specify proccess number equal to x
+    make all
+    make filter N=5e6 D=2
+    
+    ./seq.out
+    ./multithreaded.out 4
+    mpirun -np X ./distributed.out %or make all && make ultra_fast_test_distributed MPI_PROCS=X
+    mpirun -np 4 ./distributed2.out %or make all && make ultra_fast_test_distributed2 MPI_PROCS=4
+    mpirun -np 4 ./hybrid.out X
+    mpirun -np X ./hybrid2.out Y
 
     make clean
-
-## Perfomance - Speedup
-
-Here boolean matrix multiplication execution times are presented for each version (MATLAB implementation is the baseline). For the measurements, random generated sparse matrices where used with sparsity 1%. 
-
-| NxN | 1000x1000 | 5000x5000 | 25000x25000 |
-| --- | ----------- | ------------- | ------------- |
-| Sequential - Double Precision (MATLAB) |   |  |  |
-| Sequential - Boolean (C++) |  |  |   |
-| OpenMP (8 cores) |   |  |  |
-| MPI (8 nodes) |  |  |  |
-| MPI (8 nodes) + OpenMP (4 cores) per node |  |  |  |
-
-![Matlab Double-Precision Sparse matmult Performance](results/bmm_times_MATLAB_local.png)
+    make clear_times
 
 ## Results Validation
 
-The validator at ./matlab/validate_bmm_results.m reads **A,B,C_result** from their respective files and checks whether **A*B = C_result** ('*' sign for boolean matrix multiplication operator).
+The validator at ./src/matlab/validate_bmm_results.m reads **A,B,C_result** from their respective files and checks whether **A*B = C_result** ('*' sign for boolean matrix multiplication operator).
 
 On `Octave`, move to project ./src directory and execute on command line:
 
