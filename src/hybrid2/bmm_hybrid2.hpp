@@ -1,11 +1,10 @@
-#ifndef BMM_HYBRID_HPP
-#define BMM_HYBRID_HPP
+#ifndef BMM_HYBRID2_HPP
+#define BMM_HYBRID2_HPP
 
 #include "../sparse/bmm_blocking.hpp"
 #include "../headers/my_mpi_comms.hpp"
 #include <mpi.h>
 #include <omp.h>
-#include <math.h>
 
 #define MASTER 0
 #define MPI_DEST p
@@ -22,8 +21,8 @@
 
 csc *block_bmm(csc **A,csc **B, csc *C,csc ** temps, int nb,int pid);
 
-void run_bmm_master(int total_procs, int threads);
-void run_bmm_slave(int proc_num, int total_procs, int threads);
+void run_bmm_master(int total_procs);
+void run_bmm_slave(int proc_num, int total_procs);
 void ring(csc **Abl, csc**Bbl,csc **Cbl,csc **temps, int proc_num,int total_procs);
 
 inline void neighbors_check(int proc_num, int left, int right){

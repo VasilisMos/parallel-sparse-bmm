@@ -62,10 +62,10 @@ void bmm(csc *A,csc *B, csc *C){
     /* Sort the row indices for each column
      * (they are unsorted in general) 
      */
-    for(int i=0;i<Bncol;i++){
-        if(Cp[i+1]-Cp[i])
-            mergesort<int>(Ci,Cp[i],Cp[i+1]-1);
-    }
+    // for(int i=0;i<Bncol;i++){
+    //     if(Cp[i+1]-Cp[i])
+    //         mergesort<int>(Ci,Cp[i],Cp[i+1]-1);
+    // }
 
     free(Flag);
 }
@@ -107,31 +107,6 @@ void bmm(csr *A,csc *B,csr *C){
     C->nnz = nnz;
     //printf("C dims = (%d,%d), nnz = %d\n", C->rowS, C->colS,nnz);
 }
-
-/*void bmm_slow(csr *A,csc *B,csr *C){
-    int n1 = A->rowS, n2 = A->colS, n3 = B->colS;
-    int nnz = 0;
-
-    C->r_p[0] = 0;
-    
-    for(int i=0;i<n1;i++){
-        int difA = A->r_p[i+1]-A->r_p[i];
-        if(!difA) continue;
-        C->r_p[i+1] = C->r_p[i];
-
-        for(int j=0;j<n3;j++){
-            int difB = B->col_ptr[j+1]-B->col_ptr[j]; 
-            if(!difB) continue;
-
-            int bit = sparse_and(A->col+A->r_p[i], B->row+B->col_ptr[j], difA ,difB);
-            if(bit){
-                C->r_p[i+1]++;
-                C->col[nnz++] = j;
-            }
-        }
-    }
-    C->nnz = nnz;
-}*/
 
 int sparse_and_naive(int *A, int *B, int n1, int n2){
     int flag = 0;
@@ -210,62 +185,3 @@ void bmm2(int *A, int *B, int *C, int n1, int n2, int n3){
     }
 }
 
-
-/*
- * Counts the nnz(A*B), where A,B sparse matrices
- * source: https://github.com/PetterS/SuiteSparse/blob/master/MATLAB_Tools/SSMULT/ssmult_saxpy.c
- */
-int count_nnz(csc *A, csc *B, csc *C){
-
-    int Bncol = A->colS, Anrow = A->rowS;
-
-    int pb = 0 ;
-    int cnz = 0 ;
-    int mark = 0 ;
-    
-    int pbend; int pcstart, pcmax, pa, paend, k, i;
-
-    int *Ap = A->col_ptr;
-    int *Bp = B->col_ptr;
-    int *Cp = C->col_ptr;
-
-    int *Ai = A->row;
-    int *Bi = B->row;
-
-    //TODO
-    int *Ci = C->row;
-
-    int *Flag = (int *)malloc( Anrow * sizeof(int) );
-
-    for (int j = 0 ; j < Bncol ; j++)
-    {
-        /* Compute nnz (C (:,j)) */
-        mark-- ;                        /* Flag [0..n-1] != mark is now true */ 
-        pb = Bp [j] ;
-        pbend = Bp [j+1] ;
-        pcstart = cnz ;
-        pcmax = cnz + Anrow ;
-        Cp [j] = cnz ;
-        /* cnz += nnz (C (:,j)), stopping early if nnz(C(:,j)) == Anrow */
-        for ( ; pb < pbend && cnz < pcmax ; pb++)
-        {
-            k = Bi [pb] ;               /* nonzero entry B(k,j) */
-            paend = Ap [k+1] ;
-            for (pa = Ap [k] ; pa < paend ; pa++)
-            {
-                i = Ai [pa] ;           /* nonzero entry A(i,k) */
-                if (Flag [i] != mark)
-                {
-                    /* C(i,j) is a new nonzero */
-                    Flag [i] = mark ;   /* mark i as appearing in C(:,j) */
-                    cnz++ ;
-                }
-            }
-        }
-    }
-
-    Cp[Bncol] = cnz;
-
-    free(Flag);
-    return cnz;
-}

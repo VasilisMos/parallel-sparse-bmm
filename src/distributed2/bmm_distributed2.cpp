@@ -100,6 +100,7 @@ void run_bmm_master(int total_procs){
     //Finalize
     write_times(A->rowS,initiation,finishing,DISTRIBUTED,total_procs);
     write_mtx_csc(C, fname3); 
+    csc_info(C);
 }
 
 void run_bmm_slave(int proc_num, int total_procs){

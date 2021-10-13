@@ -12,7 +12,7 @@ set_params () {
 
 function generateDatasets(n=${1})
 %n = 1e4;
-d = 2;
+d = 4;
 A = sprand( n, n, d/n) > 0;
 B = sprand( n, n, d/n) > 0;
 tic; C = (A*B) > 0; t = toc
@@ -34,7 +34,7 @@ tic; store_sparse_matrix(strcat('../../datasets/',tag,'/B_', tag, '.mtx'),B); to
 clear B;
 
 fprintf('Storing matrix C.. ');
-tic; store_sparse_matrix(strcat('../../datasets/',tag,'/C_', tag, '.mtx'),C); toc;
+%tic; store_sparse_matrix(strcat('../../datasets/',tag,'/C_', tag, '.mtx'),C); toc;
 clear C;
 end
 " >> ./matlab/generateDatasets.m

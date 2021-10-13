@@ -7,6 +7,60 @@
 #define Bsq B(s,q)
 #define Cpq C(p,q)
 
+csc ** create_blocks_parallel(csc *A,int nb, int total_threads){
+
+    int n = A->colS;
+    int nnz = A->nnz;
+    int b = n/nb;
+
+
+    //printf("Block Creation, nb = %d, b = %d\n",nb,b);
+    csc **Abl = (csc**)malloc( nb * nb * sizeof(csc*));
+
+
+    //Initialize all matrix sub-blocks
+#pragma omp parallel for shared(Abl,nb,b) num_threads(total_threads)
+    for (int q = 0; q < nb; q++)
+        for (int p = 0; p < nb; p++){
+            A(p,q) = initCsc(b,b,3*nnz/nb);
+            A(p,q)->nnz = 0;
+        }
+
+#pragma omp parallel for shared(Abl) num_threads(total_threads)
+    for (int j=0; j<n;j++) // Scan A(:,j)
+    {
+        int pend = A->col_ptr[j+1];
+        int q = j/b; int p;
+        //printf("Column %d\n",j);
+        for(int pA = A->col_ptr[j]; pA < pend; pA++ )
+        {
+            int k = A->row[pA];
+
+            //printf("A(%d,%d)->col_ptr[%d]++\n",k/b,q,j - (q*b));
+            A(k/b,q)->col_ptr[j - (q*b)+1]++;
+            A(k/b,q)->row[(A(k/b,q)->nnz)++] = k - (k/b)*b;
+        }
+    }
+
+#pragma omp parallel for shared(Abl) num_threads(total_threads)
+    /*Normalize col_ptr values and parameters for each matrix subblock*/
+    for (int p = 0; p < nb; p++)
+    {
+        for (int q = 0; q < nb; q++)
+        {
+            for (int j = 1; j < b; j++)
+            {
+                A(p,q)->col_ptr[j] += A(p,q)->col_ptr[j-1];
+            }
+            A(p,q)->col_ptr[b] = A(p,q)->nnz;
+            A(p,q)->rowS = b;
+            A(p,q)->colS = b;
+        }
+    }
+
+    return Abl;
+}
+
 csc *block_bmm(csc **A,csc **B,csc ** temps, int nb,int pid){
 
     for (int s = 0; s < nb; s++) // C(p,q) = A(p,:)*B(:,q)
@@ -31,8 +85,8 @@ void run_bmm_multithread(int total_procs){
     initiation = TIC
 
     t0 = TIC
-    Abl_total = create_blocks(A, total_procs); // Matrix A cut in blocks
-    Bbl_total = create_blocks(B, total_procs); // Matrix B cut in blocks
+    Abl_total = create_blocks_parallel(A, total_procs,total_procs); // Matrix A cut in blocks
+    Bbl_total = create_blocks_parallel(B, total_procs,total_procs); // Matrix B cut in blocks
     t1 = TOC 
 
     C = bmm_multithreads(Abl_total, Bbl_total, total_procs);
@@ -44,7 +98,7 @@ void run_bmm_multithread(int total_procs){
 
     //Finalize
     write_times(A->rowS,initiation,finishing,MULTITHREADED,total_procs);
-    write_mtx_csc(C, fname3); 
+    // write_mtx_csc(C, fname3); 
 
     destroyCsc(A); destroyCsc(B); destroyCsc(C);
 }
@@ -62,6 +116,7 @@ csc *bmm_multithreads(csc **Abl_total, csc **Bbl_total, int total_procs){
 
     t1 = tic();
 #pragma omp parallel shared(Abl_total, Bbl_total,Cbl_total) num_threads(total_procs)
+// for(int proc_num=0;proc_num<total_procs;proc_num++)
 {
     int proc_num = omp_get_thread_num();
 

@@ -1,16 +1,12 @@
 #include <mpi.h>
 #include "bmm_hybrid.hpp"
 
-void *run_bmm(int proc_num, int total_procs, int threads){
-    if(proc_num) run_bmm_slave(proc_num, total_procs, threads);
-    else run_bmm_master(total_procs, threads);
+void *run_bmm(int proc_num, int total_procs){
+    if(proc_num) run_bmm_slave(proc_num, total_procs);
+    else run_bmm_master(total_procs);
 }
 
 int main(int argc, char* argv[]){
-
-    if(!(argc==2)) { cout << "Not correct args" << endl; exit(1); }
-
-    int threads = atoi(argv[1]);
 
     MPI_Init(NULL, NULL);
 
@@ -22,7 +18,7 @@ int main(int argc, char* argv[]){
     int world_rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
-    run_bmm(world_rank,world_size, threads);
+    run_bmm(world_rank,world_size);
 
     // Finalize the MPI environment.
     // printf("P%d Exiting Gracefully\n",world_rank);

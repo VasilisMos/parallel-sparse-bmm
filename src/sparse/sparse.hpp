@@ -35,6 +35,15 @@ typedef struct {
 }
 csc;
 
+typedef struct {
+    int *row;
+    int *col_ptr;
+    int *val;
+    int nnz; //number of nonzero elements
+    int rowS; //row_cardinality
+    int colS; //column_cardinality
+} Filter;
+
 
 /*Manipulate Csr and Coo form matrices*/
 coo *readCoo(char filename[]);

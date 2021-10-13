@@ -1,4 +1,4 @@
-function F = generate_filter(n=6.4e5,d=2e-5)
+function F = generate_filter(n=3e6,d=2)
 %generate_filter - Generate a sparse Filter
 %
 % Syntax: F = generate_filter(n,d)
@@ -9,12 +9,13 @@ function F = generate_filter(n=6.4e5,d=2e-5)
     output = "../../datasets/test/filter.mtx";
     get_Filter = @(n,d) sprand(n,n,d);
 
-    F = get_Filter(n,d)>1e-5;
+    %F = get_Filter(n,d)>1e-5;
+    d = 4; F = sprand( n, n, d/n) > 0;
 
     fprintf('Storing Filter Matrix.. ');
     tic; store_sparse_matrix(output,F); toc;
 
-    d = 2;
+    
     A = sprand( n, n, d/n) > 0;
     B = sprand( n, n, d/n) > 0;
     tic; C = F.*(A*B) > 0; t = toc
