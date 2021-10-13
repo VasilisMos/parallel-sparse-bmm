@@ -1,0 +1,9 @@
+23:22:57   13/10/21
+----Generating Filter Data----
+Storing Filter Matrix.. Elapsed time is 5.22654 seconds.
+t =  1.6752
+nnz(C)=60
+Storing matrix A.. Elapsed time is 5.28377 seconds.
+Storing matrix B.. Elapsed time is 5.29309 seconds.
+Storing matrix C.. Elapsed time is 0.00637913 seconds.
+----Filter Data Generated Successfully
