@@ -1,0 +1,15 @@
+Some notes for easier evaluation of the project 
+
+1) The creation of the C_test.mtx matrix C from ./src/bash_src/set_parameters.sh (Line 37) was commented during
+   the exec. time measurements and (mistakenly) not commented out afterwards. It is NOT needed for the C++ bmm,
+   BUT it is necessary for the validation check on Octave.
+
+2) In order to run multithreaded MASKED bmm someone has to move to main() of the file ./src/multithreaded/omp.cpp
+   and comment in and out the 2 lines.
+   Then normally, 
+                    make multithreaded
+                    ./multithreaded.out X
+
+3) The blocking was designed with the assumption that Nrows/(number of blocks): Integer (as stated at the assignment)
+   So for blocking and parallel versions this has to hold, eg. Matr. A, N=1e6 parallel x4=OK, parallel x3=SEGFAULT
+   Also for distributed V2 and hybrid, since processes form a 2D grid, valid values for p are perfect squares (4,9,16,...). Other values with the current implementation will cause SEGFAULT for those versions.
